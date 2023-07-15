@@ -1,16 +1,7 @@
-export interface iData {
-  name: string;
-  type: string;
-  ticker: string;
-  param: string;
-  currency: string;
-  yahooSymbol: string;
-  yahooName: string;
-  display: string;
-}
-
-export const data: iData[] = [
+export const testPriceResult = [
   {
+    marketPrice: 29.01,
+    changePercent: 2.0400982,
     name: "Zai Lab",
     type: "ADR",
     ticker: "ZLAB.O",
@@ -21,6 +12,8 @@ export const data: iData[] = [
     display: "再鼎医药（ZLAB.O）",
   },
   {
+    marketPrice: 80.28,
+    changePercent: 6.5569453,
     name: "PDD",
     type: "ADR",
     ticker: "PDD.O",
@@ -31,6 +24,8 @@ export const data: iData[] = [
     display: "拼多多（PDD.O）",
   },
   {
+    marketPrice: 0.99,
+    changePercent: 1.0204072,
     name: "Smart Share",
     type: "ADR",
     ticker: "EM.O",
@@ -41,6 +36,8 @@ export const data: iData[] = [
     display: "怪兽充电（EM.O）",
   },
   {
+    marketPrice: 6.47,
+    changePercent: 0,
     name: "Sinovac",
     type: "Share",
     ticker: "SVA.O",
@@ -51,16 +48,20 @@ export const data: iData[] = [
     display: "科兴生物（SVA.O）12",
   },
   {
+    marketPrice: 1.48,
+    changePercent: 7.246379,
     name: "Harbour Biomed",
     type: "Share",
-    ticker: "hk_2142.HK",
-    param: "HK2142",
+    ticker: "2142.HK",
+    param: "hk_HK2142",
     currency: "HKD",
     yahooSymbol: "2142.HK",
     yahooName: "HBM Holdings Limited",
     display: "和铂医药（2142.HK）",
   },
   {
+    marketPrice: 0.7133,
+    changePercent: -1.6273605,
     name: "Cepton",
     type: "Share",
     ticker: "CPTN.O",
@@ -71,6 +72,8 @@ export const data: iData[] = [
     display: "Cepton（CPTN.O）",
   },
   {
+    marketPrice: 12.665,
+    changePercent: 6.428574,
     name: "Bitdeer",
     type: "Share",
     ticker: "BTDR",
@@ -81,6 +84,8 @@ export const data: iData[] = [
     display: "Bitdeer（BTDR）",
   },
   {
+    marketPrice: 92.69,
+    changePercent: 0.6734036,
     name: "Bloomage （华熙生物)",
     type: "Share",
     ticker: "688363.SH",
@@ -91,6 +96,8 @@ export const data: iData[] = [
     display: "华熙生物（688363.SH）",
   },
   {
+    marketPrice: 22.49,
+    changePercent: 0.76164913,
     name: "九丰能源（远丰森泰）",
     type: "Share",
     ticker: "605090.SH",
@@ -101,6 +108,8 @@ export const data: iData[] = [
     display: "九丰能源（605090.SH）",
   },
   {
+    marketPrice: 9.65,
+    changePercent: 6.512132,
     name: "Alphamab",
     type: "Share",
     ticker: "HK9966",
@@ -111,6 +120,8 @@ export const data: iData[] = [
     display: "康宁杰瑞（9966.HK）",
   },
   {
+    marketPrice: 2.25,
+    changePercent: 0,
     name: "TOT",
     type: "Share",
     ticker: "1875.HK",
@@ -121,6 +132,8 @@ export const data: iData[] = [
     display: "东曜药业（1875.HK）",
   },
   {
+    marketPrice: 14.69,
+    changePercent: 2.1557682,
     name: "InventisBio (益方生物)",
     type: "Share",
     ticker: "688382.SH",
@@ -131,6 +144,8 @@ export const data: iData[] = [
     display: "益方生物（688382.SH）",
   },
   {
+    marketPrice: 1.12,
+    changePercent: -7.438019,
     name: "Connect Biopharma",
     type: "ADR",
     ticker: "CNTB.O",
@@ -141,6 +156,8 @@ export const data: iData[] = [
     display: "康乃德（CNTB.O）",
   },
   {
+    marketPrice: 1.185,
+    changePercent: 4.867252,
     name: "Zhihu",
     type: "ADR",
     ticker: "ZH.N",
@@ -151,6 +168,8 @@ export const data: iData[] = [
     display: "知乎（ZH.N）",
   },
   {
+    marketPrice: 124,
+    changePercent: 1.4729977,
     name: "3D MEDICINES（思路迪）",
     type: "Share",
     ticker: "1244.HK",
@@ -161,6 +180,8 @@ export const data: iData[] = [
     display: "3D MEDICINES（思路迪）",
   },
   {
+    marketPrice: 15.3,
+    changePercent: -3.530892,
     name: "博安生物",
     type: "Share",
     ticker: "6955.HK",
@@ -171,6 +192,8 @@ export const data: iData[] = [
     display: "博安生物（6955.HK）",
   },
   {
+    marketPrice: 7.38,
+    changePercent: 5.428573,
     name: "YMM",
     type: "ADR",
     ticker: "YMM.N",
@@ -181,6 +204,8 @@ export const data: iData[] = [
     display: "满帮（YMM.N）",
   },
   {
+    marketPrice: 16.45,
+    changePercent: 0.3660853,
     name: "Wankai",
     type: "Share",
     ticker: "301216.SZ",
@@ -191,16 +216,8 @@ export const data: iData[] = [
     display: "万凯新材（301216.SZ）",
   },
   {
-    name: "锦波生物",
-    type: "Share",
-    ticker: "832982.NQ",
-    param: "sb_832982",
-    currency: "RMB",
-    yahooSymbol: "",
-    yahooName: "",
-    display: "锦波生物（832982.NQ）",
-  },
-  {
+    marketPrice: 2.7,
+    changePercent: 3.4482818,
     name: "叮当健康",
     type: "Share",
     ticker: "9886.HK",
@@ -211,6 +228,8 @@ export const data: iData[] = [
     display: "叮当健康（9886.HK）",
   },
   {
+    marketPrice: 30.25,
+    changePercent: 0.66555995,
     name: "汇通达",
     type: "Share",
     ticker: "9878.HK",
@@ -221,6 +240,8 @@ export const data: iData[] = [
     display: "汇通达网络（9878.HK）",
   },
   {
+    marketPrice: 7.86,
+    changePercent: 0.51150846,
     name: "中辰股份",
     type: "Share",
     ticker: "300933.SZ",
@@ -231,6 +252,8 @@ export const data: iData[] = [
     display: "中辰股份（300933.SZ）",
   },
   {
+    marketPrice: 69.3,
+    changePercent: 1.986764,
     name: "Standard Chartered Bank",
     type: "N/A",
     ticker: "2888.HK",
@@ -241,6 +264,8 @@ export const data: iData[] = [
     display: "Standard Chartered Bank（2888.HK）",
   },
   {
+    marketPrice: 62.15,
+    changePercent: 1.2214984,
     name: "HSBC",
     type: "N/A",
     ticker: "0005.HK",
@@ -251,6 +276,8 @@ export const data: iData[] = [
     display: "HSBC（0005.HK）",
   },
   {
+    marketPrice: 33.75,
+    changePercent: 0.44643316,
     name: "CMB Wing Lung (CMB)",
     ticker: "3968.HK",
     type: "N/A",
@@ -261,6 +288,8 @@ export const data: iData[] = [
     display: "CMB（3968.HK）",
   },
   {
+    marketPrice: 31.87,
+    changePercent: 2.773301,
     name: "DBS",
     type: "N/A",
     ticker: "HK05",
@@ -271,6 +300,8 @@ export const data: iData[] = [
     display: "DBS（D05.SG）",
   },
   {
+    marketPrice: 58.5725,
+    changePercent: 2.5249383,
     name: "East West Bank",
     type: "N/A",
     ticker: "EWBC",
@@ -281,6 +312,8 @@ export const data: iData[] = [
     display: "East West Bank（EWBC）",
   },
   {
+    marketPrice: 148.8875,
+    changePercent: 0.49780837,
     name: "JP Morgan",
     type: "N/A",
     ticker: "JPM",
@@ -291,6 +324,8 @@ export const data: iData[] = [
     display: "JP Morgan（JPM）",
   },
   {
+    marketPrice: 85.875,
+    changePercent: 0.12242434,
     name: "Morgan Stanley",
     type: "N/A",
     ticker: "MS",
@@ -301,6 +336,8 @@ export const data: iData[] = [
     display: "Morgan Stanley（MS）",
   },
   {
+    marketPrice: 327.73,
+    changePercent: 0.40748075,
     name: "Goldman Sachs",
     type: "N/A",
     ticker: "GS",
@@ -311,6 +348,8 @@ export const data: iData[] = [
     display: "Goldman Sachs（GS）",
   },
   {
+    marketPrice: 1310.23,
+    changePercent: 1.001356,
     name: "First Citizens",
     type: "N/A",
     ticker: "FCNCA",
@@ -321,6 +360,8 @@ export const data: iData[] = [
     display: "First Citizens（FCNCA）",
   },
   {
+    marketPrice: 21.095,
+    changePercent: 1.9574615,
     name: "UBS",
     type: "N/A",
     ticker: "UBS",
@@ -329,15 +370,5 @@ export const data: iData[] = [
     yahooSymbol: "UBS",
     yahooName: "UBS Group AG",
     display: "UBS（UBS）",
-  },
-  {
-    name: "Citibank",
-    type: "N/A",
-    ticker: "C",
-    param: "usa_C",
-    currency: "USD",
-    yahooSymbol: "C",
-    yahooName: "Citigroup Inc.",
-    display: "Citibank（C）",
   },
 ];
