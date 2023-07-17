@@ -2,20 +2,21 @@ import { Request, Response, NextFunction } from "express";
 import { generateWord } from "../utils/generateWord";
 import { getStockPrice } from "../utils/getStockPrice";
 import { getNewsLinks } from "../utils/getNewsLinks";
+import { testPriceResult } from "./testData";
 
 async function getReport(req: Request, res: Response, next: NextFunction) {
   console.log("-----FUNTION START-----");
   try {
     // YAHOO API FIRST
-    const priceResult: any = await getStockPrice();
-
+    // const priceResult: any = await getStockPrice();
+    const priceResult = testPriceResult;
     // Send result to frontend first
-    res.status(200).send({
-      success: true,
-      data: {
-        priceResult,
-      },
-    });
+    // res.status(200).send({
+    //   success: true,
+    //   data: {
+    //     priceResult,
+    //   },
+    // });
 
     // Do scraping
     const scrapingResult: any = await getNewsLinks(priceResult);

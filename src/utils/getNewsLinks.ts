@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
 import getHtml from "./getHtml";
+import moment from "moment";
 
 export const getNewsLinks = async (priceResult: any) => {
   try {
@@ -56,15 +57,40 @@ export const getNewsLinks = async (priceResult: any) => {
               // Add stock name to each news article
               allLinks.forEach((el) => el.unshift(priceResult[i].display));
 
-              // Set today date
-              // const today = moment(new Date()).format("YYYYMMDD");
-              const today = "20230717";
-
-              // Get today news Article links
+              // Get news Article links
+              const today = moment(new Date()).format("YYYYMMDD");
+              const workDay = moment(new Date()).format("dddd");
               let matchLinks: any = [];
-              for (let i = 0; i < allLinks.length; i++) {
-                if (allLinks[i][2].includes(today)) {
-                  matchLinks.push(allLinks[i]);
+
+              console.log(workDay, "<<<<<<<<<<<<<<<");
+
+              if (workDay === "Monday") {
+                const currentDate = moment();
+                const saturday = currentDate
+                  .clone()
+                  .subtract(2, "days")
+                  .format("YYYYMMDD");
+                const sunday = currentDate
+                  .clone()
+                  .subtract(1, "day")
+                  .format("YYYYMMDD");
+                console.log(saturday, "<<<< saturday");
+                console.log(sunday, "<<<< sunday");
+
+                for (let i = 0; i < allLinks.length; i++) {
+                  if (
+                    allLinks[i][2].includes(today) ||
+                    allLinks[i][2].includes(saturday) ||
+                    allLinks[i][2].includes(sunday)
+                  ) {
+                    matchLinks.push(allLinks[i]);
+                  }
+                }
+              } else {
+                for (let i = 0; i < allLinks.length; i++) {
+                  if (allLinks[i][2].includes(today)) {
+                    matchLinks.push(allLinks[i]);
+                  }
                 }
               }
 
@@ -94,6 +120,7 @@ export const getNewsLinks = async (priceResult: any) => {
           }
         }
       }
+      await browser.close();
       return scrapingResult;
     } catch (err: any) {
       console.log(err);
