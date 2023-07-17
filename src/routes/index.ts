@@ -1,8 +1,8 @@
 import { Router } from "express";
-import getStockPrice from "../controller";
+import getReport from "../controller";
 
 const router = Router();
 
-router.get("/stock-price", getStockPrice);
+router.get("/stock-price", getReport);
 
 export default router;

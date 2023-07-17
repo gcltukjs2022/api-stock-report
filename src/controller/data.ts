@@ -53,8 +53,8 @@ export const data: iData[] = [
   {
     name: "Harbour Biomed",
     type: "Share",
-    ticker: "hk_2142.HK",
-    param: "HK2142",
+    ticker: "2142.HK",
+    param: "hk_HK2142",
     currency: "HKD",
     yahooSymbol: "2142.HK",
     yahooName: "HBM Holdings Limited",

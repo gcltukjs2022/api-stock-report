@@ -6,7 +6,7 @@ const port = process.env.PORT || 3001;
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 const cors = require("cors");
-import stocksRouter from "./routes";
+import reportRouter from "./routes";
 dotenv.config();
 
 // Cors
@@ -23,19 +23,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req: Request, res: Response) => {
-  // res.sendFile("./misc/index.html", { root: __dirname });
   res.status(200).json({ message: "Hello World!" });
 });
 
-app.get("/test", (req: Request, res: Response) => {
-  // res.sendFile("./misc/index.html", { root: __dirname });
-  res.status(200).json({ message: "Hello World!" });
-});
-
-app.use(stocksRouter);
-
-// Needs to be after api routes
-// app.use(errorHandler);
+app.use(reportRouter);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
