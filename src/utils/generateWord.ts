@@ -19,6 +19,7 @@ export const generateWord = async (
   priceResult: any,
 ) => {
   let hightLightStocksParagraphs: any = [];
+  console.log("----IN GEN WORD---");
 
   for (let i = 0; i < hightlightStocksArr.length; i++) {
     hightLightStocksParagraphs.push(
@@ -51,33 +52,38 @@ export const generateWord = async (
   let articlesParagraphs: any = [];
 
   for (let i = 0; i < scrapingResult.length; i++) {
-    for (let j = 0; j < scrapingResult[i].length; j++) {
-      articlesParagraphs.push(
-        new Paragraph({
-          children: [],
-        }),
+    let articles = [];
+
+    const display = [
+      new Paragraph({
+        children: [],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: scrapingResult[i].display,
+            bold: true,
+            highlight: "yellow",
+          }),
+        ],
+      }),
+    ];
+    for (let j = 0; j < scrapingResult[i].news.length; j++) {
+      articles.push(
         new Paragraph({
           children: [
-            new TextRun({
-              text: scrapingResult[i][j][0],
-              bold: true,
-              highlight: "yellow",
-            }),
+            new TextRun({ text: scrapingResult[i].news[j].title, bold: true }),
           ],
         }),
         new Paragraph({
-          children: [
-            new TextRun({ text: scrapingResult[i][j][1], bold: true }),
-          ],
-        }),
-        new Paragraph({
-          children: [new TextRun(scrapingResult[i][j][2])],
+          children: [new TextRun(scrapingResult[i].news[j].article)],
         }),
         new Paragraph({
           children: [],
         }),
       );
     }
+    articlesParagraphs.push(...display, ...articles);
   }
 
   const firstRow = new Table({

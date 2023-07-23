@@ -19,7 +19,9 @@ async function getReport(req: Request, res: Response, next: NextFunction) {
     // });
 
     // Do scraping
-    const scrapingResult: any = await getNewsLinks(priceResult);
+
+    const scrapingList = priceResult.filter((el) => el.newsParam.length > 0);
+    const scrapingResult: any = await getNewsLinks(scrapingList);
 
     console.log("----SCRAPING COMPLETED----");
 

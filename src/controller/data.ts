@@ -7,6 +7,7 @@ export interface iData {
   yahooSymbol: string;
   yahooName: string;
   display: string;
+  newsParam: string;
 }
 
 export const data: iData[] = [
@@ -19,6 +20,7 @@ export const data: iData[] = [
     yahooSymbol: "ZLAB",
     yahooName: "Zai Lab Limited",
     display: "再鼎医药（ZLAB.O）",
+    newsParam: "ZLAB_1",
   },
   {
     name: "PDD",
@@ -29,6 +31,7 @@ export const data: iData[] = [
     yahooSymbol: "PDD",
     yahooName: "PDD Holdings Inc.",
     display: "拼多多（PDD.O）",
+    newsParam: "PDD_1",
   },
   {
     name: "Smart Share",
@@ -39,6 +42,7 @@ export const data: iData[] = [
     yahooSymbol: "EM",
     yahooName: "Smart Share Global Limited",
     display: "怪兽充电（EM.O）",
+    newsParam: "EM_1",
   },
   {
     name: "Sinovac",
@@ -48,7 +52,8 @@ export const data: iData[] = [
     currency: "USD",
     yahooSymbol: "SVA",
     yahooName: "Sinovac Biotech Ltd.",
-    display: "科兴生物（SVA.O）12",
+    display: "科兴生物（SVA.O）",
+    newsParam: "SVA_1",
   },
   {
     name: "Harbour Biomed",
@@ -59,6 +64,7 @@ export const data: iData[] = [
     yahooSymbol: "2142.HK",
     yahooName: "HBM Holdings Limited",
     display: "和铂医药（2142.HK）",
+    newsParam: "HK2142_1",
   },
   {
     name: "Cepton",
@@ -69,6 +75,7 @@ export const data: iData[] = [
     yahooSymbol: "CPTN",
     yahooName: "Cepton, Inc.",
     display: "Cepton（CPTN.O）",
+    newsParam: "CPTN_1",
   },
   {
     name: "Bitdeer",
@@ -79,6 +86,7 @@ export const data: iData[] = [
     yahooSymbol: "BTDR",
     yahooName: "Bitdeer Technologies Group",
     display: "Bitdeer（BTDR）",
+    newsParam: "BTDR_1",
   },
   {
     name: "Bloomage （华熙生物)",
@@ -89,6 +97,7 @@ export const data: iData[] = [
     yahooSymbol: "688363.SS",
     yahooName: "Bloomage BioTechnology Corporation Limited",
     display: "华熙生物（688363.SH）",
+    newsParam: "688363_1",
   },
   {
     name: "九丰能源（远丰森泰）",
@@ -99,6 +108,7 @@ export const data: iData[] = [
     yahooSymbol: "605090.SS",
     yahooName: "Jiangxi Jovo Energy Co., Ltd",
     display: "九丰能源（605090.SH）",
+    newsParam: "605090_1",
   },
   {
     name: "Alphamab",
@@ -109,6 +119,7 @@ export const data: iData[] = [
     yahooSymbol: "9966.HK",
     yahooName: "Alphamab Oncology",
     display: "康宁杰瑞（9966.HK）",
+    newsParam: "HK9966_1",
   },
   {
     name: "TOT",
@@ -119,6 +130,7 @@ export const data: iData[] = [
     yahooSymbol: "1875.HK",
     yahooName: "TOT BIOPHARM International Company Limited",
     display: "东曜药业（1875.HK）",
+    newsParam: "HK1875_1",
   },
   {
     name: "InventisBio (益方生物)",
@@ -129,6 +141,7 @@ export const data: iData[] = [
     yahooSymbol: "688382.SS",
     yahooName: "InventisBio Co., Ltd.",
     display: "益方生物（688382.SH）",
+    newsParam: "688382_1",
   },
   {
     name: "Connect Biopharma",
@@ -139,6 +152,7 @@ export const data: iData[] = [
     yahooSymbol: "CNTB",
     yahooName: "Connect Biopharma Holdings Limited",
     display: "康乃德（CNTB.O）",
+    newsParam: "CNTB_1",
   },
   {
     name: "Zhihu",
@@ -149,6 +163,7 @@ export const data: iData[] = [
     yahooSymbol: "ZH",
     yahooName: "Zhihu Inc.",
     display: "知乎（ZH.N）",
+    newsParam: "ZH_1",
   },
   {
     name: "3D MEDICINES（思路迪）",
@@ -159,6 +174,7 @@ export const data: iData[] = [
     yahooSymbol: "1244.HK",
     yahooName: "3D Medicines Inc.",
     display: "3D MEDICINES（思路迪）",
+    newsParam: "HK1244_1",
   },
   {
     name: "博安生物",
@@ -169,6 +185,7 @@ export const data: iData[] = [
     yahooSymbol: "6955.HK",
     yahooName: "Shandong Boan Biotechnology Co., Ltd.",
     display: "博安生物（6955.HK）",
+    newsParam: "HK6955_1",
   },
   {
     name: "YMM",
@@ -179,6 +196,7 @@ export const data: iData[] = [
     yahooSymbol: "YMM",
     yahooName: "Full Truck Alliance Co. Ltd.",
     display: "满帮（YMM.N）",
+    newsParam: "YMM_1",
   },
   {
     name: "Wankai",
@@ -189,6 +207,7 @@ export const data: iData[] = [
     yahooSymbol: "301216.SZ",
     yahooName: "Wankai New Materials Co., Ltd.",
     display: "万凯新材（301216.SZ）",
+    newsParam: "301216_1",
   },
   {
     name: "锦波生物",
@@ -199,6 +218,7 @@ export const data: iData[] = [
     yahooSymbol: "",
     yahooName: "",
     display: "锦波生物（832982.NQ）",
+    newsParam: "832982_1",
   },
   {
     name: "叮当健康",
@@ -209,6 +229,7 @@ export const data: iData[] = [
     yahooSymbol: "9886.HK",
     yahooName: "Dingdang Health Technology Group Ltd.",
     display: "叮当健康（9886.HK）",
+    newsParam: "HK9886_1",
   },
   {
     name: "汇通达",
@@ -219,6 +240,7 @@ export const data: iData[] = [
     yahooSymbol: "9878.HK",
     yahooName: "Huitongda Network Co., Ltd.",
     display: "汇通达网络（9878.HK）",
+    newsParam: "HK9878_1",
   },
   {
     name: "中辰股份",
@@ -229,6 +251,7 @@ export const data: iData[] = [
     yahooSymbol: "300933.SZ",
     yahooName: "Sinostar Cable Co., Ltd",
     display: "中辰股份（300933.SZ）",
+    newsParam: "300933_1",
   },
   {
     name: "Standard Chartered Bank",
@@ -239,6 +262,7 @@ export const data: iData[] = [
     yahooSymbol: "2888.HK",
     yahooName: "Standard Chartered PLC",
     display: "Standard Chartered Bank（2888.HK）",
+    newsParam: "HK2888_1",
   },
   {
     name: "HSBC",
@@ -249,6 +273,7 @@ export const data: iData[] = [
     yahooSymbol: "0005.HK",
     yahooName: "HSBC Holdings plc",
     display: "HSBC（0005.HK）",
+    newsParam: "HK0005_1",
   },
   {
     name: "CMB Wing Lung (CMB)",
@@ -259,6 +284,7 @@ export const data: iData[] = [
     yahooSymbol: "3968.HK",
     yahooName: "China Merchants Bank Co., Ltd.",
     display: "CMB（3968.HK）",
+    newsParam: "HK3968_1",
   },
   {
     name: "DBS",
@@ -269,6 +295,7 @@ export const data: iData[] = [
     yahooSymbol: "D05.SI",
     yahooName: "DBS Group Holdings Ltd",
     display: "DBS（D05.SG）",
+    newsParam: "",
   },
   {
     name: "East West Bank",
@@ -279,6 +306,7 @@ export const data: iData[] = [
     yahooSymbol: "EWBC",
     yahooName: "East West Bancorp, Inc.",
     display: "East West Bank（EWBC）",
+    newsParam: "EWBC_1",
   },
   {
     name: "JP Morgan",
@@ -289,6 +317,7 @@ export const data: iData[] = [
     yahooSymbol: "JPM",
     yahooName: "JPMorgan Chase & Co.",
     display: "JP Morgan（JPM）",
+    newsParam: "JPM_1",
   },
   {
     name: "Morgan Stanley",
@@ -299,6 +328,7 @@ export const data: iData[] = [
     yahooSymbol: "MS",
     yahooName: "Morgan Stanley",
     display: "Morgan Stanley（MS）",
+    newsParam: "MS_1",
   },
   {
     name: "Goldman Sachs",
@@ -309,6 +339,7 @@ export const data: iData[] = [
     yahooSymbol: "GS",
     yahooName: "The Goldman Sachs Group, Inc.",
     display: "Goldman Sachs（GS）",
+    newsParam: "GS_1",
   },
   {
     name: "First Citizens",
@@ -319,6 +350,7 @@ export const data: iData[] = [
     yahooSymbol: "FCNCA",
     yahooName: "First Citizens BancShares, Inc.",
     display: "First Citizens（FCNCA）",
+    newsParam: "FCNCA_1",
   },
   {
     name: "UBS",
@@ -329,6 +361,7 @@ export const data: iData[] = [
     yahooSymbol: "UBS",
     yahooName: "UBS Group AG",
     display: "UBS（UBS）",
+    newsParam: "UBS_1",
   },
   {
     name: "Citibank",
@@ -339,5 +372,6 @@ export const data: iData[] = [
     yahooSymbol: "C",
     yahooName: "Citigroup Inc.",
     display: "Citibank（C）",
+    newsParam: "C_1",
   },
 ];

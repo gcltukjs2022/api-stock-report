@@ -1,129 +1,87 @@
-import puppeteer from "puppeteer";
-import getHtml from "./getHtml";
+import axios from "axios";
 import moment from "moment";
+import getHtml from "./getHtml";
 
-export const getNewsLinks = async (priceResult: any) => {
+export const getNewsLinks = async (scrapingList: any) => {
+  console.log("-----GET NEWS LINKS FUNTION START-----");
+
+  //   const today = moment(new Date()).format("YYYYMMDD");
+  const today = "20230721";
+  const workDay = moment(new Date()).format("dddd");
+  //   const workDay = "Monday";
+
+  const currentDate = moment();
+  const saturday = currentDate.clone().subtract(2, "days").format("YYYYMMDD");
+  const sunday = currentDate.clone().subtract(1, "day").format("YYYYMMDD");
+
   try {
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
-    await page.setRequestInterception(true);
-
-    page.on("request", (req) => {
-      if (
-        req.resourceType() == "stylesheet" ||
-        req.resourceType() == "font" ||
-        req.resourceType() == "image"
-      ) {
-        req.abort();
-      } else {
-        req.continue();
-      }
-    });
-
-    page.on("dialog", async (dialog) => {
-      await dialog.accept();
-    });
-
-    let scrapingResult = [];
-    const maxRetries = 3;
-    const retryDelay = 2000;
-
-    try {
-      for (let i = 0; i < priceResult.length; i++) {
-        console.log(`IN ${[i]} LOOP ${priceResult[i].param}`);
-
-        if (priceResult[i].param.length > 0) {
-          const url = `https://m.10jqka.com.cn/stockpage/${priceResult[i].param}/`;
-          let retries = 0;
-
-          while (retries < maxRetries) {
-            try {
-              await page.goto(url, { timeout: 30000, waitUntil: "load" });
-              console.log("----ENTER STOCK PAGE----");
-
-              await page.waitForSelector(
-                "body .main-content .hexm-news-cont .geguNews-pane a",
-              );
-
-              const allLinks = await page.evaluate(() =>
-                Array.from(
-                  document.querySelectorAll(
-                    "body .main-content .hexm-news-cont .geguNews-pane a",
-                  ),
-                  (el: any) => [el.textContent, el.href],
-                ),
-              );
-
-              // Add stock name to each news article
-              allLinks.forEach((el) => el.unshift(priceResult[i].display));
-
-              // Get news Article links
-              const today = moment(new Date()).format("YYYYMMDD");
-              const workDay = moment(new Date()).format("dddd");
-              let matchLinks: any = [];
-
-              console.log(workDay, "<<<<<<<<<<<<<<<");
-
+    const newsLinksPromise = scrapingList.map((el: any, i: number) => {
+      return new Promise((resolve, reject) => {
+        resolve(
+          axios
+            .get(`https://m.0033.com/list/sm/sc/${el.newsParam}.jsonp`)
+            .then((response: any) => {
+              const resArr = JSON.stringify(response.data).split(",");
+              const stockObj: any = {
+                display: el.display,
+                newsLinks: [],
+              };
+              let links;
               if (workDay === "Monday") {
-                const currentDate = moment();
-                const saturday = currentDate
-                  .clone()
-                  .subtract(2, "days")
-                  .format("YYYYMMDD");
-                const sunday = currentDate
-                  .clone()
-                  .subtract(1, "day")
-                  .format("YYYYMMDD");
-                console.log(saturday, "<<<< saturday");
-                console.log(sunday, "<<<< sunday");
-
-                for (let i = 0; i < allLinks.length; i++) {
-                  if (
-                    allLinks[i][2].includes(today) ||
-                    allLinks[i][2].includes(saturday) ||
-                    allLinks[i][2].includes(sunday)
-                  ) {
-                    matchLinks.push(allLinks[i]);
-                  }
-                }
+                links = resArr
+                  .map((el) => el.replace(/\\/g, ""))
+                  .filter(
+                    (el) =>
+                      el.includes(today) ||
+                      el.includes(saturday) ||
+                      el.includes(sunday),
+                  );
               } else {
-                for (let i = 0; i < allLinks.length; i++) {
-                  if (allLinks[i][2].includes(today)) {
-                    matchLinks.push(allLinks[i]);
-                  }
-                }
+                links = resArr
+                  .map((el) => el.replace(/\\/g, ""))
+                  .filter((el) => el.includes(today));
               }
 
-              console.log("----MATCH LINKS----", matchLinks);
-
-              // Start loop to scrape
-              for (let i = 0; i < matchLinks.length; i++) {
-                const url = matchLinks[i][2];
-                const httpsUrl = url
-                  .replace("http", "https")
-                  .replace("m", "news");
-                console.log(httpsUrl);
-
-                const pElements: any = await getHtml(httpsUrl);
-                console.log("----ARTICLES----", pElements);
-                matchLinks[i][2] = pElements.join("").trim();
+              if (links.length > 0) {
+                const urlRegex = /http[^"]*shtml/g;
+                const urls = links
+                  .map((el) => {
+                    const match = el.match(urlRegex);
+                    return match ? match[0] : null;
+                  })
+                  .filter((el) => el !== null);
+                stockObj.newsLinks = urls;
               }
-              if (matchLinks.length > 0) {
-                scrapingResult.push(matchLinks);
-              }
-              break;
-            } catch (err) {
-              console.log("Error occurred, retrying...");
-              retries++;
-              await new Promise((resolve) => setTimeout(resolve, retryDelay));
-            }
-          }
-        }
+              return stockObj;
+            })
+            .catch((err) => reject(err)),
+        );
+      });
+    });
+
+    const linksArr = await Promise.all(newsLinksPromise);
+
+    const articlesArr = linksArr.filter((el: any) => el.newsLinks.length > 0);
+
+    for (let i = 0; i < articlesArr.length; i++) {
+      console.log(`IN LOOP ${i} ${articlesArr[i].display}`);
+      articlesArr[i].news = [];
+      let scrapingArr = [];
+      for (let j = 0; j < articlesArr[i].newsLinks.length; j++) {
+        const httpsUrl = articlesArr[i].newsLinks[j]
+          .replace("http", "https")
+          .replace("m", "news");
+        scrapingArr.push(getHtml(httpsUrl));
       }
-      await browser.close();
-      return scrapingResult;
-    } catch (err: any) {
-      console.log(err);
+
+      const scrapingRes = await Promise.all(scrapingArr);
+      const arr = scrapingRes.map((el: any) => {
+        return { title: el.title, article: el.article.join("").trim("") };
+      });
+      articlesArr[i].news = arr;
     }
-  } catch (err) {}
+    return articlesArr;
+  } catch (err) {
+    console.log("IN ERR: ", err);
+  }
 };

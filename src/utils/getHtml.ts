@@ -17,20 +17,22 @@ const getHtml = async (url: any) => {
           const buffer = Buffer.concat(chunks);
           const decodedData = iconv.decode(buffer, "gbk");
           const $ = cheerio.load(decodedData);
+          const title = $(".main-title").text();
           const parentElement = $(".main-text");
           const pTags = parentElement.find("p");
 
-          const elements = pTags
+          const article = pTags
             .map((index: any, element: any) => {
               return $(element).text();
             })
             .get();
 
-          resolve(elements);
+          resolve({ title: title, article: article });
         });
       })
       .on("error", (error: any) => {
         reject(error);
+        console.log(error);
       });
   });
 };
