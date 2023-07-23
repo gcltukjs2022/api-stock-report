@@ -12,6 +12,7 @@ import {
 import * as fs from "fs";
 import moment from "moment";
 import path from "path";
+import { convertDocToBase64 } from "./convertDocToBase64";
 
 export const generateWord = async (
   hightlightStocksArr: any,
@@ -20,33 +21,71 @@ export const generateWord = async (
 ) => {
   let hightLightStocksParagraphs: any = [];
   console.log("----IN GEN WORD---");
+  const currentDate = new Date();
+  const currentDayOfMonth = currentDate.getDate();
 
   for (let i = 0; i < hightlightStocksArr.length; i++) {
-    hightLightStocksParagraphs.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `${hightlightStocksArr[i].display} ${moment(
-              new Date(),
-            ).format("M")} 月 ${moment(new Date()).format("D")} 日 ${
-              hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅"
-            }  ${Math.round(hightlightStocksArr[i].changePercent)}%, 收盘价 ${
-              hightlightStocksArr[i].marketPrice
-            } ${
-              hightlightStocksArr[i].currency === "USD"
-                ? "美元"
-                : hightlightStocksArr[i].currency === "HKD"
-                ? "港币"
-                : hightlightStocksArr[i].currency === "SGD"
-                ? "新加坡元"
-                : "元"
-            }`,
-            bold: true,
-            highlight: "yellow",
-          }),
-        ],
-      }),
-    );
+    if (currentDayOfMonth === 1) {
+      hightLightStocksParagraphs.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `${hightlightStocksArr[i].display} ${moment(new Date())
+                .subtract(1, "month")
+                .format("M")} 月 ${
+                hightlightStocksArr[i].currency === "USD"
+                  ? moment(new Date()).subtract(1, "day").format("D")
+                  : moment(new Date()).format("D")
+              } 日 ${
+                hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅"
+              }  ${Math.round(hightlightStocksArr[i].changePercent)}%, 收盘价 ${
+                hightlightStocksArr[i].marketPrice
+              } ${
+                hightlightStocksArr[i].currency === "USD"
+                  ? "美元"
+                  : hightlightStocksArr[i].currency === "HKD"
+                  ? "港币"
+                  : hightlightStocksArr[i].currency === "SGD"
+                  ? "新加坡元"
+                  : "元"
+              }`,
+              bold: true,
+              highlight: "yellow",
+            }),
+          ],
+        }),
+      );
+    } else {
+      hightLightStocksParagraphs.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `${hightlightStocksArr[i].display} ${moment(
+                new Date(),
+              ).format("M")} 月 ${
+                hightlightStocksArr[i].currency === "USD"
+                  ? moment(new Date()).subtract(1, "day").format("D")
+                  : moment(new Date()).format("D")
+              } 日 ${
+                hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅"
+              }  ${Math.round(hightlightStocksArr[i].changePercent)}%, 收盘价 ${
+                hightlightStocksArr[i].marketPrice
+              } ${
+                hightlightStocksArr[i].currency === "USD"
+                  ? "美元"
+                  : hightlightStocksArr[i].currency === "HKD"
+                  ? "港币"
+                  : hightlightStocksArr[i].currency === "SGD"
+                  ? "新加坡元"
+                  : "元"
+              }`,
+              bold: true,
+              highlight: "yellow",
+            }),
+          ],
+        }),
+      );
+    }
   }
 
   let articlesParagraphs: any = [];
@@ -138,74 +177,155 @@ export const generateWord = async (
   const tableArr = [];
 
   for (let i = 0; i < priceResult.length; i++) {
-    tableArr.push(
-      new Table({
-        columnWidths: [901, 901, 901, 901, 5406],
-        rows: [
-          new TableRow({
-            children: [
-              new TableCell({
-                width: {
-                  size: 901,
-                  type: WidthType.DXA,
-                },
-                children: [new Paragraph(priceResult[i].name)],
-              }),
-              new TableCell({
-                width: {
-                  size: 901,
-                  type: WidthType.DXA,
-                },
-                children: [new Paragraph(priceResult[i].type)],
-              }),
-              new TableCell({
-                width: {
-                  size: 901,
-                  type: WidthType.DXA,
-                },
-                children: [new Paragraph(priceResult[i].ticker)],
-              }),
-              new TableCell({
-                width: {
-                  size: 901,
-                  type: WidthType.DXA,
-                },
-                children: [new Paragraph(priceResult[i].currency)],
-              }),
-              new TableCell({
-                width: {
-                  size: 5406,
-                  type: WidthType.DXA,
-                },
-                children: [
-                  new Paragraph(
-                    `${priceResult[i].display} ${moment(new Date()).format(
-                      "M",
-                    )} 月 ${moment(new Date()).format("D")} 日 ${
-                      priceResult[i].changePercent > 0 ? "涨幅" : "跌幅"
-                    } ${Math.round(priceResult[i].changePercent)}%, 收盘价 ${
-                      priceResult[i].marketPrice
-                    } ${
-                      priceResult[i].currency === "USD"
-                        ? "美元"
-                        : priceResult[i].currency === "HKD"
-                        ? "港币"
-                        : priceResult[i].currency === "SGD"
-                        ? "新加坡元"
-                        : "元"
-                    }`,
-                  ),
-                ],
-              }),
-            ],
-            height: {
-              value: 800,
-              rule: HeightRule.EXACT,
-            },
-          }),
-        ],
-      }),
-    );
+    if (currentDayOfMonth === 1) {
+      tableArr.push(
+        new Table({
+          columnWidths: [901, 901, 901, 901, 5406],
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].name)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].type)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].ticker)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].currency)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 5406,
+                    type: WidthType.DXA,
+                  },
+                  children: [
+                    new Paragraph(
+                      `${priceResult[i].display} ${
+                        priceResult[i].currency === "USD"
+                          ? moment(new Date()).subtract(1, "month").format("M")
+                          : moment(new Date()).format("M")
+                      } 月 ${
+                        priceResult[i].currency === "USD"
+                          ? moment(new Date()).subtract(1, "day").format("D")
+                          : moment(new Date()).format("D")
+                      } 日 ${
+                        priceResult[i].changePercent > 0 ? "涨幅" : "跌幅"
+                      } ${Math.round(priceResult[i].changePercent)}%, 收盘价 ${
+                        priceResult[i].marketPrice
+                      } ${
+                        priceResult[i].currency === "USD"
+                          ? "美元"
+                          : priceResult[i].currency === "HKD"
+                          ? "港币"
+                          : priceResult[i].currency === "SGD"
+                          ? "新加坡元"
+                          : "元"
+                      }`,
+                    ),
+                  ],
+                }),
+              ],
+              height: {
+                value: 800,
+                rule: HeightRule.EXACT,
+              },
+            }),
+          ],
+        }),
+      );
+    } else {
+      tableArr.push(
+        new Table({
+          columnWidths: [901, 901, 901, 901, 5406],
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].name)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].type)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].ticker)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 901,
+                    type: WidthType.DXA,
+                  },
+                  children: [new Paragraph(priceResult[i].currency)],
+                }),
+                new TableCell({
+                  width: {
+                    size: 5406,
+                    type: WidthType.DXA,
+                  },
+                  children: [
+                    new Paragraph(
+                      `${priceResult[i].display} ${moment(new Date()).format(
+                        "M",
+                      )} 月 ${
+                        priceResult[i].currency === "USD"
+                          ? moment(new Date()).subtract(1, "day").format("D")
+                          : moment(new Date()).format("D")
+                      } 日 ${
+                        priceResult[i].changePercent > 0 ? "涨幅" : "跌幅"
+                      } ${Math.round(priceResult[i].changePercent)}%, 收盘价 ${
+                        priceResult[i].marketPrice
+                      } ${
+                        priceResult[i].currency === "USD"
+                          ? "美元"
+                          : priceResult[i].currency === "HKD"
+                          ? "港币"
+                          : priceResult[i].currency === "SGD"
+                          ? "新加坡元"
+                          : "元"
+                      }`,
+                    ),
+                  ],
+                }),
+              ],
+              height: {
+                value: 800,
+                rule: HeightRule.EXACT,
+              },
+            }),
+          ],
+        }),
+      );
+    }
   }
 
   const doc = new Document({
@@ -261,8 +381,15 @@ export const generateWord = async (
   });
 
   // Used to export the file into a .docx file
-  const filePath = path.join(__dirname, "../generatedDocs/report.docx");
-  Packer.toBuffer(doc).then((buffer) => {
+  const filePath = path.join(
+    __dirname,
+    `../generatedDocs/report${moment(new Date()).format("DDMMYYYY")}.docx`,
+  );
+  await Packer.toBuffer(doc).then((buffer) => {
     fs.writeFileSync(filePath, buffer, { encoding: "binary" });
   });
+
+  const base64Doc = await convertDocToBase64();
+
+  return base64Doc;
 };

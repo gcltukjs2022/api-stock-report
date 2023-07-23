@@ -2,25 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import { generateWord } from "../utils/generateWord";
 import { getStockPrice } from "../utils/getStockPrice";
 import { getNewsLinks } from "../utils/getNewsLinks";
-import { testPriceResult } from "./testData";
 
 async function getReport(req: Request, res: Response, next: NextFunction) {
   console.log("-----FUNTION START-----");
   try {
     // YAHOO API FIRST
-    // const priceResult: any = await getStockPrice();
-    const priceResult = testPriceResult;
-    // Send result to frontend first
-    // res.status(200).send({
-    //   success: true,
-    //   data: {
-    //     priceResult,
-    //   },
-    // });
+    const priceResult: any = await getStockPrice();
+    // const priceResult = testPriceResult;
 
     // Do scraping
-
-    const scrapingList = priceResult.filter((el) => el.newsParam.length > 0);
+    const scrapingList = priceResult.filter(
+      (el: any) => el.newsParam.length > 0,
+    );
     const scrapingResult: any = await getNewsLinks(scrapingList);
 
     console.log("----SCRAPING COMPLETED----");
@@ -31,7 +24,18 @@ async function getReport(req: Request, res: Response, next: NextFunction) {
     );
 
     // Generate word doc
-    await generateWord(hightlightStocksArr, scrapingResult, priceResult);
+    const base64Doc = await generateWord(
+      hightlightStocksArr,
+      scrapingResult,
+      priceResult,
+    );
+
+    res.status(200).send({
+      success: true,
+      message: "successful",
+      priceResult: priceResult,
+      file: base64Doc,
+    });
 
     console.log("----FUNCTION END----");
   } catch (err) {
