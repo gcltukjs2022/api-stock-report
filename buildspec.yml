@@ -13,9 +13,10 @@ phases:
 
 artifacts:
   files:
-    - package.lock.json
+    - package-lock.json
     - package.json
-    - "dist/**/*"
-    - ".platform/**/*" # AWS Elastic Beanstalk configuration files
-    - ".ebextensions/**/*" # AWS Elastic Beanstalk configuration files
+    - "dist/**/*""
+    - .platform/**/* 
+    - .ebextensions/**/*
+    - "node_modules/**/*"
   discard-paths: no
