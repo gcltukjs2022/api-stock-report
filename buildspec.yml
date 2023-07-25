@@ -9,11 +9,13 @@ phases:
       - npm install
   build:
     commands:
-      - tsc
+      - npm run build
 
 artifacts:
   files:
+    - package.lock.json
     - package.json
-    - package-lock.json
     - "dist/**/*"
-  discard-paths: yes
+    - ".platform/**/*" # AWS Elastic Beanstalk configuration files
+    - ".ebextensions/**/*" # AWS Elastic Beanstalk configuration files
+  discard-paths: no
