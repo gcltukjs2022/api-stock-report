@@ -381,7 +381,7 @@ export const generateWord = async (
   });
 
   // Used to export the file into a .docx file
-  const filePath = path.join(__dirname, "../generatedDocs/report.docx");
+  const filePath = path.join(__dirname, "../report.docx");
   await Packer.toBuffer(doc).then((buffer) => {
     fs.writeFileSync(filePath, buffer, { encoding: "binary" });
   });
