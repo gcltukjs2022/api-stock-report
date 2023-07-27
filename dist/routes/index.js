@@ -6,5 +6,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var controller_1 = __importDefault(require("../controller"));
 var router = (0, express_1.Router)();
-router.get("/stock-price", controller_1.default);
+router.get("/stock-report", controller_1.default);
 exports.default = router;

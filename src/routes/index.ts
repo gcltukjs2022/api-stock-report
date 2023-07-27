@@ -3,6 +3,6 @@ import getReport from "../controller";
 
 const router = Router();
 
-router.get("/stock-price", getReport);
+router.get("/stock-report", getReport);
 
 export default router;
