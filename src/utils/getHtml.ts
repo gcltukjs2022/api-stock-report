@@ -6,7 +6,7 @@ const getHtml = async (url: any, retry: number = 0) => {
   return new Promise((resolve, reject) => {
     https
       .get(url, (res: any) => {
-        console.log("----STATUS CODE----", res.statusCode);
+        console.log("----ARTICLE STATUS----", res.statusCode);
         const chunks: any = [];
 
         if (res.statusCode !== 200 && retry < 10) {

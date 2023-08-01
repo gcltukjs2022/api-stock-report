@@ -62,6 +62,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                         resolve(axios_1.default
                             .get("https://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"))
                             .then(function (response) {
+                            console.log("----JSON STATUS ".concat(el.display, "----"), response.status);
                             var resArr = JSON.stringify(response.data).split(",");
                             var stockObj = {
                                 display: el.display,
