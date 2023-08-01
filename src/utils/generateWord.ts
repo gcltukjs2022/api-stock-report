@@ -30,17 +30,19 @@ export const generateWord = async (
         new Paragraph({
           children: [
             new TextRun({
-              text: `${hightlightStocksArr[i].display} ${moment(new Date())
-                .subtract(1, "month")
-                .format("M")} 月 ${
+              text: `${hightlightStocksArr[i].display} ${
+                hightlightStocksArr[i].currency === "USD"
+                  ? moment(new Date()).subtract(1, "month").format("M")
+                  : moment(new Date()).format("M")
+              } 月 ${
                 hightlightStocksArr[i].currency === "USD"
                   ? moment(new Date()).subtract(1, "day").format("D")
                   : moment(new Date()).format("D")
               } 日 ${
                 hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅"
-              }  ${Math.round(hightlightStocksArr[i].changePercent)}%, 收盘价 ${
-                hightlightStocksArr[i].marketPrice
-              } ${
+              }  ${Math.abs(
+                Math.round(hightlightStocksArr[i].changePercent),
+              )}%, 收盘价 ${hightlightStocksArr[i].marketPrice.toFixed(1)} ${
                 hightlightStocksArr[i].currency === "USD"
                   ? "美元"
                   : hightlightStocksArr[i].currency === "HKD"

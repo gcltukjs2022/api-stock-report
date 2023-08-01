@@ -91,11 +91,11 @@ var generateWord = function (hightlightStocksArr, scrapingResult, priceResult) {
                         hightLightStocksParagraphs.push(new docx_1.Paragraph({
                             children: [
                                 new docx_1.TextRun({
-                                    text: "".concat(hightlightStocksArr[i].display, " ").concat((0, moment_1.default)(new Date())
-                                        .subtract(1, "month")
-                                        .format("M"), " \u6708 ").concat(hightlightStocksArr[i].currency === "USD"
+                                    text: "".concat(hightlightStocksArr[i].display, " ").concat(hightlightStocksArr[i].currency === "USD"
+                                        ? (0, moment_1.default)(new Date()).subtract(1, "month").format("M")
+                                        : (0, moment_1.default)(new Date()).format("M"), " \u6708 ").concat(hightlightStocksArr[i].currency === "USD"
                                         ? (0, moment_1.default)(new Date()).subtract(1, "day").format("D")
-                                        : (0, moment_1.default)(new Date()).format("D"), " \u65E5 ").concat(hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅", "  ").concat(Math.round(hightlightStocksArr[i].changePercent), "%, \u6536\u76D8\u4EF7 ").concat(hightlightStocksArr[i].marketPrice, " ").concat(hightlightStocksArr[i].currency === "USD"
+                                        : (0, moment_1.default)(new Date()).format("D"), " \u65E5 ").concat(hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅", "  ").concat(Math.abs(Math.round(hightlightStocksArr[i].changePercent)), "%, \u6536\u76D8\u4EF7 ").concat(hightlightStocksArr[i].marketPrice.toFixed(1), " ").concat(hightlightStocksArr[i].currency === "USD"
                                         ? "美元"
                                         : hightlightStocksArr[i].currency === "HKD"
                                             ? "港币"

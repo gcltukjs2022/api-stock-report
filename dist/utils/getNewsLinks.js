@@ -49,7 +49,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
         switch (_a.label) {
             case 0:
                 console.log("-----GET NEWS LINKS FUNTION START-----");
-                today = "20230721";
+                today = (0, moment_1.default)(new Date()).format("YYYYMMDD");
                 workDay = (0, moment_1.default)(new Date()).format("dddd");
                 currentDate = (0, moment_1.default)();
                 saturday = currentDate.clone().subtract(2, "days").format("YYYYMMDD");
