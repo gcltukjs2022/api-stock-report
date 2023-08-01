@@ -15,8 +15,6 @@ async function getReport(req: Request, res: Response, next: NextFunction) {
       (el: any) => el.newsParam.length > 0,
     );
 
-    console.log("----SCRAPING LIST----", scrapingList);
-
     const scrapingResult: any = await getNewsLinks(scrapingList);
 
     console.log("----SCRAPING COMPLETED----");

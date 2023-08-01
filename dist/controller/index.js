@@ -53,7 +53,6 @@ function getReport(req, res, next) {
                 case 2:
                     priceResult = _a.sent();
                     scrapingList = priceResult.filter(function (el) { return el.newsParam.length > 0; });
-                    console.log("----SCRAPING LIST----", scrapingList);
                     return [4 /*yield*/, (0, getNewsLinks_1.getNewsLinks)(scrapingList)];
                 case 3:
                     scrapingResult = _a.sent();
