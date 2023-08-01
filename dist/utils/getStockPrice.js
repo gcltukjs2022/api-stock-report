@@ -62,7 +62,7 @@ var getStockPrice = function () { return __awaiter(void 0, void 0, void 0, funct
                 symbols = data_1.data.map(function (el) { return el.yahooSymbol; }).join(",");
                 options = {
                     method: "GET",
-                    url: "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes",
+                    url: process.env.YAHOO_API,
                     params: {
                         region: "US",
                         symbols: symbols,

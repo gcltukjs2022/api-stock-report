@@ -7,7 +7,7 @@ export const getStockPrice = async () => {
 
     const options = {
       method: "GET",
-      url: "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes",
+      url: process.env.YAHOO_API,
       params: {
         region: "US",
         symbols: symbols,

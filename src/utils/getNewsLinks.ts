@@ -5,8 +5,8 @@ import getHtml from "./getHtml";
 export const getNewsLinks = async (scrapingList: any) => {
   console.log("-----GET NEWS LINKS FUNTION START-----");
 
-  //   const today = moment(new Date()).format("YYYYMMDD");
-  const today = "20230721";
+  const today = moment(new Date()).format("YYYYMMDD");
+  // const today = "20230721";
   const workDay = moment(new Date()).format("dddd");
   //   const workDay = "Monday";
 

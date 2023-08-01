@@ -39,36 +39,72 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var iconv = require("iconv-lite");
 var https = require("https");
 var cheerio = require("cheerio");
-var getHtml = function (url) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, new Promise(function (resolve, reject) {
-                https
-                    .get(url, function (res) {
-                    console.log("----STATUS CODE----", res.statusCode);
-                    var chunks = [];
-                    res.on("data", function (chunk) {
-                        chunks.push(chunk);
+var getHtml = function (url, retry) {
+    if (retry === void 0) { retry = 0; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    https
+                        .get(url, function (res) {
+                        console.log("----STATUS CODE----", res.statusCode);
+                        var chunks = [];
+                        if (res.statusCode !== 200 && retry < 10) {
+                            return getHtml(url, retry++);
+                        }
+                        res.on("data", function (chunk) {
+                            chunks.push(chunk);
+                        });
+                        res.on("end", function () {
+                            var buffer = Buffer.concat(chunks);
+                            var decodedData = iconv.decode(buffer, "gbk");
+                            var $ = cheerio.load(decodedData);
+                            var title = $(".main-title").text();
+                            var parentElement = $(".main-text");
+                            var pTags = parentElement.find("p");
+                            var article = pTags
+                                .map(function (index, element) {
+                                return $(element).text();
+                            })
+                                .get();
+                            resolve({ title: title, article: article });
+                        });
+                    })
+                        .on("error", function (error) {
+                        reject(error);
+                        console.log(error);
                     });
-                    res.on("end", function () {
-                        var buffer = Buffer.concat(chunks);
-                        var decodedData = iconv.decode(buffer, "gbk");
-                        var $ = cheerio.load(decodedData);
-                        var title = $(".main-title").text();
-                        var parentElement = $(".main-text");
-                        var pTags = parentElement.find("p");
-                        var article = pTags
-                            .map(function (index, element) {
-                            return $(element).text();
-                        })
-                            .get();
-                        resolve({ title: title, article: article });
-                    });
-                })
-                    .on("error", function (error) {
-                    reject(error);
-                    console.log(error);
-                });
-            })];
+                })];
+        });
     });
-}); };
+};
 exports.default = getHtml;
+// const getHtml = async (url: any) => {
+//   return new Promise((resolve, reject) => {
+//     https
+//       .get(url, (res: any) => {
+//         console.log("----STATUS CODE----", res.statusCode);
+//         const chunks: any = [];
+//         res.on("data", (chunk: any) => {
+//           chunks.push(chunk);
+//         });
+//         res.on("end", () => {
+//           const buffer = Buffer.concat(chunks);
+//           const decodedData = iconv.decode(buffer, "gbk");
+//           const $ = cheerio.load(decodedData);
+//           const title = $(".main-title").text();
+//           const parentElement = $(".main-text");
+//           const pTags = parentElement.find("p");
+//           const article = pTags
+//             .map((index: any, element: any) => {
+//               return $(element).text();
+//             })
+//             .get();
+//           resolve({ title: title, article: article });
+//         });
+//       })
+//       .on("error", (error: any) => {
+//         reject(error);
+//         console.log(error);
+//       });
+//   });
+// };
