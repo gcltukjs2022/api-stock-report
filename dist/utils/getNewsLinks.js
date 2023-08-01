@@ -44,7 +44,7 @@ var axios_1 = __importDefault(require("axios"));
 var moment_1 = __importDefault(require("moment"));
 var getHtml_1 = __importDefault(require("./getHtml"));
 var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, void 0, function () {
-    var today, workDay, currentDate, saturday, sunday, newsLinksPromise, linksArr, articlesArr, i, scrapingArr, j, httpsUrl, scrapingRes, arr, err_1;
+    var today, workDay, currentDate, saturday, sunday, makeRequest_1, newsLinksPromise, linksArr, articlesArr, i, scrapingArr, j, httpsUrl, scrapingRes, arr, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -57,48 +57,59 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 7, , 8]);
-                newsLinksPromise = Promise.all(scrapingList.map(function (el, i) {
+                makeRequest_1 = function (el) {
                     return axios_1.default
                         .get("https://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"))
                         .then(function (response) {
                         console.log("----JSON STATUS ".concat(el.display, "----"), response.status);
-                        var resArr = JSON.stringify(response.data).split(",");
-                        var stockObj = {
-                            display: el.display,
-                            newsLinks: [],
-                        };
-                        var links;
-                        if (workDay === "Monday") {
-                            links = resArr
-                                .map(function (el) { return el.replace(/\\/g, ""); })
-                                .filter(function (el) {
-                                return el.includes(today) ||
-                                    el.includes(saturday) ||
-                                    el.includes(sunday);
-                            });
+                        if (response.status === 200) {
+                            var resArr = JSON.stringify(response.data).split(",");
+                            var stockObj = {
+                                display: el.display,
+                                newsLinks: [],
+                            };
+                            var links = void 0;
+                            if (workDay === "Monday") {
+                                links = resArr
+                                    .map(function (el) { return el.replace(/\\/g, ""); })
+                                    .filter(function (el) {
+                                    return el.includes(today) ||
+                                        el.includes(saturday) ||
+                                        el.includes(sunday);
+                                });
+                            }
+                            else {
+                                links = resArr
+                                    .map(function (el) { return el.replace(/\\/g, ""); })
+                                    .filter(function (el) { return el.includes(today); });
+                            }
+                            console.log("----LINKS----", links);
+                            if (links.length > 0) {
+                                var urlRegex_1 = /http[^"]*shtml/g;
+                                var urls = links
+                                    .map(function (el) {
+                                    var match = el.match(urlRegex_1);
+                                    return match ? match[0] : null;
+                                })
+                                    .filter(function (el) { return el !== null; });
+                                stockObj.newsLinks = urls;
+                            }
+                            return stockObj;
                         }
                         else {
-                            links = resArr
-                                .map(function (el) { return el.replace(/\\/g, ""); })
-                                .filter(function (el) { return el.includes(today); });
+                            // Retry the request after a delay using recursion
+                            console.log("Retrying request for ".concat(el.display));
+                            return makeRequest_1(el);
                         }
-                        if (links.length > 0) {
-                            var urlRegex_1 = /http[^"]*shtml/g;
-                            var urls = links
-                                .map(function (el) {
-                                var match = el.match(urlRegex_1);
-                                return match ? match[0] : null;
-                            })
-                                .filter(function (el) { return el !== null; });
-                            stockObj.newsLinks = urls;
-                        }
-                        return stockObj;
                     })
                         .catch(function (err) {
                         // If an error occurs during the request, you can return a default value or handle it accordingly
                         console.error(err);
                         return { display: el.display, newsLinks: [] };
                     });
+                };
+                newsLinksPromise = Promise.all(scrapingList.map(function (el, i) {
+                    return makeRequest_1(el);
                 }));
                 return [4 /*yield*/, newsLinksPromise];
             case 2:

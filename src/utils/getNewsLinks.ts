@@ -13,13 +13,13 @@ export const getNewsLinks = async (scrapingList: any) => {
   const sunday = currentDate.clone().subtract(1, "day").format("YYYYMMDD");
 
   try {
-    const newsLinksPromise = Promise.all(
-      scrapingList.map((el: any, i: number) => {
-        return axios
-          .get(`https://m.0033.com/list/sm/sc/${el.newsParam}.jsonp`)
-          .then((response: any) => {
-            console.log(`----JSON STATUS ${el.display}----`, response.status);
+    const makeRequest: any = (el: any) => {
+      return axios
+        .get(`https://m.0033.com/list/sm/sc/${el.newsParam}.jsonp`)
+        .then((response: any) => {
+          console.log(`----JSON STATUS ${el.display}----`, response.status);
 
+          if (response.status === 200) {
             const resArr = JSON.stringify(response.data).split(",");
             const stockObj: any = {
               display: el.display,
@@ -41,6 +41,8 @@ export const getNewsLinks = async (scrapingList: any) => {
                 .filter((el) => el.includes(today));
             }
 
+            console.log(`----LINKS----`, links);
+
             if (links.length > 0) {
               const urlRegex = /http[^"]*shtml/g;
               const urls = links
@@ -51,13 +53,24 @@ export const getNewsLinks = async (scrapingList: any) => {
                 .filter((el) => el !== null);
               stockObj.newsLinks = urls;
             }
+
             return stockObj;
-          })
-          .catch((err) => {
-            // If an error occurs during the request, you can return a default value or handle it accordingly
-            console.error(err);
-            return { display: el.display, newsLinks: [] };
-          });
+          } else {
+            // Retry the request after a delay using recursion
+            console.log(`Retrying request for ${el.display}`);
+            return makeRequest(el);
+          }
+        })
+        .catch((err) => {
+          // If an error occurs during the request, you can return a default value or handle it accordingly
+          console.error(err);
+          return { display: el.display, newsLinks: [] };
+        });
+    };
+
+    const newsLinksPromise = Promise.all(
+      scrapingList.map((el: any, i: number) => {
+        return makeRequest(el);
       }),
     );
 
