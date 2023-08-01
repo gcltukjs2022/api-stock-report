@@ -48,7 +48,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("-----GET NEWS LINKS FUNTION START-----");
+                console.log("-----GET NEWS LINKS FUNCTION START-----");
                 today = (0, moment_1.default)(new Date()).format("YYYYMMDD");
                 workDay = (0, moment_1.default)(new Date()).format("dddd");
                 currentDate = (0, moment_1.default)();
@@ -57,48 +57,50 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 7, , 8]);
-                newsLinksPromise = scrapingList.map(function (el, i) {
-                    return new Promise(function (resolve, reject) {
-                        resolve(axios_1.default
-                            .get("https://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"))
-                            .then(function (response) {
-                            console.log("----JSON STATUS ".concat(el.display, "----"), response.status);
-                            var resArr = JSON.stringify(response.data).split(",");
-                            var stockObj = {
-                                display: el.display,
-                                newsLinks: [],
-                            };
-                            var links;
-                            if (workDay === "Monday") {
-                                links = resArr
-                                    .map(function (el) { return el.replace(/\\/g, ""); })
-                                    .filter(function (el) {
-                                    return el.includes(today) ||
-                                        el.includes(saturday) ||
-                                        el.includes(sunday);
-                                });
-                            }
-                            else {
-                                links = resArr
-                                    .map(function (el) { return el.replace(/\\/g, ""); })
-                                    .filter(function (el) { return el.includes(today); });
-                            }
-                            if (links.length > 0) {
-                                var urlRegex_1 = /http[^"]*shtml/g;
-                                var urls = links
-                                    .map(function (el) {
-                                    var match = el.match(urlRegex_1);
-                                    return match ? match[0] : null;
-                                })
-                                    .filter(function (el) { return el !== null; });
-                                stockObj.newsLinks = urls;
-                            }
-                            return stockObj;
-                        })
-                            .catch(function (err) { return reject(err); }));
+                newsLinksPromise = Promise.all(scrapingList.map(function (el, i) {
+                    return axios_1.default
+                        .get("https://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"))
+                        .then(function (response) {
+                        console.log("----JSON STATUS ".concat(el.display, "----"), response.status);
+                        var resArr = JSON.stringify(response.data).split(",");
+                        var stockObj = {
+                            display: el.display,
+                            newsLinks: [],
+                        };
+                        var links;
+                        if (workDay === "Monday") {
+                            links = resArr
+                                .map(function (el) { return el.replace(/\\/g, ""); })
+                                .filter(function (el) {
+                                return el.includes(today) ||
+                                    el.includes(saturday) ||
+                                    el.includes(sunday);
+                            });
+                        }
+                        else {
+                            links = resArr
+                                .map(function (el) { return el.replace(/\\/g, ""); })
+                                .filter(function (el) { return el.includes(today); });
+                        }
+                        if (links.length > 0) {
+                            var urlRegex_1 = /http[^"]*shtml/g;
+                            var urls = links
+                                .map(function (el) {
+                                var match = el.match(urlRegex_1);
+                                return match ? match[0] : null;
+                            })
+                                .filter(function (el) { return el !== null; });
+                            stockObj.newsLinks = urls;
+                        }
+                        return stockObj;
+                    })
+                        .catch(function (err) {
+                        // If an error occurs during the request, you can return a default value or handle it accordingly
+                        console.error(err);
+                        return { display: el.display, newsLinks: [] };
                     });
-                });
-                return [4 /*yield*/, Promise.all(newsLinksPromise)];
+                }));
+                return [4 /*yield*/, newsLinksPromise];
             case 2:
                 linksArr = _a.sent();
                 articlesArr = linksArr.filter(function (el) { return el.newsLinks.length > 0; });
@@ -130,9 +132,85 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
             case 7:
                 err_1 = _a.sent();
                 console.log("IN ERR: ", err_1);
-                return [3 /*break*/, 8];
+                throw err_1; // Rethrow the error to propagate it upwards if needed
             case 8: return [2 /*return*/];
         }
     });
 }); };
 exports.getNewsLinks = getNewsLinks;
+// export const getNewsLinks = async (scrapingList: any) => {
+//   console.log("-----GET NEWS LINKS FUNTION START-----");
+//   const today = moment(new Date()).format("YYYYMMDD");
+//   // const today = "20230721";
+//   const workDay = moment(new Date()).format("dddd");
+//   //   const workDay = "Monday";
+//   const currentDate = moment();
+//   const saturday = currentDate.clone().subtract(2, "days").format("YYYYMMDD");
+//   const sunday = currentDate.clone().subtract(1, "day").format("YYYYMMDD");
+//   try {
+//     const newsLinksPromise = scrapingList.map((el: any, i: number) => {
+//       return new Promise((resolve, reject) => {
+//         resolve(
+//           axios
+//             .get(`https://m.0033.com/list/sm/sc/${el.newsParam}.jsonp`)
+//             .then((response: any) => {
+//               console.log(`----JSON STATUS ${el.display}----`, response.status);
+//               const resArr = JSON.stringify(response.data).split(",");
+//               const stockObj: any = {
+//                 display: el.display,
+//                 newsLinks: [],
+//               };
+//               let links;
+//               if (workDay === "Monday") {
+//                 links = resArr
+//                   .map((el) => el.replace(/\\/g, ""))
+//                   .filter(
+//                     (el) =>
+//                       el.includes(today) ||
+//                       el.includes(saturday) ||
+//                       el.includes(sunday),
+//                   );
+//               } else {
+//                 links = resArr
+//                   .map((el) => el.replace(/\\/g, ""))
+//                   .filter((el) => el.includes(today));
+//               }
+//               if (links.length > 0) {
+//                 const urlRegex = /http[^"]*shtml/g;
+//                 const urls = links
+//                   .map((el) => {
+//                     const match = el.match(urlRegex);
+//                     return match ? match[0] : null;
+//                   })
+//                   .filter((el) => el !== null);
+//                 stockObj.newsLinks = urls;
+//               }
+//               return stockObj;
+//             })
+//             .catch((err) => reject(err)),
+//         );
+//       });
+//     });
+//     const linksArr = await Promise.all(newsLinksPromise);
+//     const articlesArr = linksArr.filter((el: any) => el.newsLinks.length > 0);
+//     for (let i = 0; i < articlesArr.length; i++) {
+//       console.log(`IN LOOP ${i} ${articlesArr[i].display}`);
+//       articlesArr[i].news = [];
+//       let scrapingArr = [];
+//       for (let j = 0; j < articlesArr[i].newsLinks.length; j++) {
+//         const httpsUrl = articlesArr[i].newsLinks[j]
+//           .replace("http", "https")
+//           .replace("m", "news");
+//         scrapingArr.push(getHtml(httpsUrl));
+//       }
+//       const scrapingRes = await Promise.all(scrapingArr);
+//       const arr = scrapingRes.map((el: any) => {
+//         return { title: el.title, article: el.article.join("").trim("") };
+//       });
+//       articlesArr[i].news = arr;
+//     }
+//     return articlesArr;
+//   } catch (err) {
+//     console.log("IN ERR: ", err);
+//   }
+// };
