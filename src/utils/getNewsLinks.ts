@@ -21,6 +21,7 @@ export const getNewsLinks = async (scrapingList: any) => {
           axios
             .get(`https://m.0033.com/list/sm/sc/${el.newsParam}.jsonp`)
             .then((response: any) => {
+              console.log(`----JSON STATUS ${el.display}----`, response.status);
               const resArr = JSON.stringify(response.data).split(",");
               const stockObj: any = {
                 display: el.display,

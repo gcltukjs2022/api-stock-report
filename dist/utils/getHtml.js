@@ -46,7 +46,7 @@ var getHtml = function (url, retry) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     https
                         .get(url, function (res) {
-                        console.log("----STATUS CODE----", res.statusCode);
+                        console.log("----ARTICLE STATUS----", res.statusCode);
                         var chunks = [];
                         if (res.statusCode !== 200 && retry < 10) {
                             return getHtml(url, retry++);
