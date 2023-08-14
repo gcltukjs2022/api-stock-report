@@ -9,9 +9,9 @@ const getHtml = async (url: any, retry: number = 0) => {
         console.log("----ARTICLE STATUS----", res.statusCode);
         const chunks: any = [];
 
-        if (res.statusCode !== 200 && retry < 10) {
-          return getHtml(url, retry++);
-        }
+        // if (res.statusCode !== 200 && retry < 10) {
+        //   return getHtml(url, retry++);
+        // }
 
         res.on("data", (chunk: any) => {
           chunks.push(chunk);
