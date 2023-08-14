@@ -48,9 +48,9 @@ var getHtml = function (url, retry) {
                         .get(url, function (res) {
                         console.log("----ARTICLE STATUS----", res.statusCode);
                         var chunks = [];
-                        if (res.statusCode !== 200 && retry < 10) {
-                            return getHtml(url, retry++);
-                        }
+                        // if (res.statusCode !== 200 && retry < 10) {
+                        //   return getHtml(url, retry++);
+                        // }
                         res.on("data", function (chunk) {
                             chunks.push(chunk);
                         });
