@@ -40,9 +40,9 @@ export const generateWord = async (
                   : moment(new Date()).format("D")
               } 日 ${
                 hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅"
-              }  ${Math.abs(
-                Math.round(hightlightStocksArr[i].changePercent),
-              )}%, 收盘价 ${hightlightStocksArr[i].marketPrice.toFixed(1)} ${
+              }  ${Math.abs(hightlightStocksArr[i].changePercent).toFixed(
+                1,
+              )}%, 收盘价 ${hightlightStocksArr[i].marketPrice} ${
                 hightlightStocksArr[i].currency === "USD"
                   ? "美元"
                   : hightlightStocksArr[i].currency === "HKD"
@@ -70,8 +70,8 @@ export const generateWord = async (
                   : moment(new Date()).format("D")
               } 日 ${
                 hightlightStocksArr[i].changePercent > 0 ? "涨幅" : "跌幅"
-              }  ${Math.abs(
-                Math.round(hightlightStocksArr[i].changePercent),
+              }  ${Math.abs(hightlightStocksArr[i].changePercent).toFixed(
+                1,
               )}%, 收盘价 ${hightlightStocksArr[i].marketPrice} ${
                 hightlightStocksArr[i].currency === "USD"
                   ? "美元"
