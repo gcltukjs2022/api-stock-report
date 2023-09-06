@@ -65,10 +65,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.convertDocToBase64 = void 0;
 var path_1 = __importDefault(require("path"));
 var fs = __importStar(require("fs"));
+var util_1 = require("util");
+var readFileAsync = (0, util_1.promisify)(fs.readFile);
 var convertDocToBase64 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var filePath, fileContent;
     return __generator(this, function (_a) {
-        filePath = path_1.default.join(__dirname, "../report.docx");
+        filePath = path_1.default.join("/tmp", "report.docx");
         fileContent = fs.readFileSync(filePath);
         return [2 /*return*/, Buffer.from(fileContent).toString("base64")];
     });

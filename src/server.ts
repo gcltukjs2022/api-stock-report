@@ -1,8 +1,9 @@
 import express, { Request, Response, Express } from "express";
+const serverless = require("serverless-http");
 
 const app: Express = express();
 
-const port = process.env.PORT || 3001;
+// const port = process.env.PORT || 3001;
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 const cors = require("cors");
@@ -22,12 +23,14 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/hello", (req: Request, res: Response) => {
   res.status(200).json({ message: "Hello World!" });
 });
 
 app.use(reportRouter);
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+// });
+
+module.exports.handler = serverless(app);

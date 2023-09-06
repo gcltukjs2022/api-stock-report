@@ -377,7 +377,7 @@ var generateWord = function (hightlightStocksArr, scrapingResult, priceResult) {
                         },
                     ],
                 });
-                filePath = path_1.default.join(__dirname, "../report.docx");
+                filePath = path_1.default.join("/tmp", "report.docx");
                 return [4 /*yield*/, docx_1.Packer.toBuffer(doc).then(function (buffer) {
                         fs.writeFileSync(filePath, buffer, { encoding: "binary" });
                     })];

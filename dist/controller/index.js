@@ -39,44 +39,64 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var generateWord_1 = require("../utils/generateWord");
 var getStockPrice_1 = require("../utils/getStockPrice");
 var getNewsLinks_1 = require("../utils/getNewsLinks");
-function getReport(req, res, next) {
+var AWS = require("aws-sdk");
+var s3 = new AWS.S3();
+// async function getReport(req: Request, res: Response, next: NextFunction) {
+function getReport(event, context, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, base64Doc, err_1;
+        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, base64Doc, bucketName, key, body, params, err_1, errorResponse;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("-----FUNTION START-----");
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 5, , 6]);
+                    _a.trys.push([0, 5, , 6]);
                     return [4 /*yield*/, (0, getStockPrice_1.getStockPrice)()];
-                case 2:
+                case 1:
                     priceResult = _a.sent();
                     scrapingList = priceResult.filter(function (el) { return el.newsParam.length > 0; });
                     return [4 /*yield*/, (0, getNewsLinks_1.getNewsLinks)(scrapingList)];
-                case 3:
+                case 2:
                     scrapingResult = _a.sent();
                     console.log("----SCRAPING COMPLETED----");
                     hightlightStocksArr = priceResult.filter(function (el) { return Math.abs(el.changePercent) >= 5; });
                     return [4 /*yield*/, (0, generateWord_1.generateWord)(hightlightStocksArr, scrapingResult, priceResult)];
-                case 4:
+                case 3:
                     base64Doc = _a.sent();
-                    res.status(200).send({
-                        success: true,
-                        message: "successful",
-                        priceResult: priceResult,
-                        file: base64Doc,
-                    });
+                    // res.status(200).send({
+                    //   success: true,
+                    //   message: "successful",
+                    //   priceResult: priceResult,
+                    //   file: base64Doc,
+                    // });
                     console.log("----FUNCTION END----");
-                    return [3 /*break*/, 6];
+                    bucketName = "stock-report-bucket";
+                    key = "report.docx";
+                    body = base64Doc;
+                    params = {
+                        Bucket: bucketName,
+                        Key: key,
+                        Body: body,
+                    };
+                    return [4 /*yield*/, s3.putObject(params).promise()];
+                case 4:
+                    _a.sent();
+                    console.log("File ".concat(key, " uploaded to ").concat(bucketName));
+                    return [2 /*return*/, {
+                            statusCode: 200,
+                            body: JSON.stringify("File uploaded successfully"),
+                        }];
                 case 5:
                     err_1 = _a.sent();
                     console.log("IN ERR: ", err_1);
-                    res.status(400).send({
-                        success: false,
-                        message: "Something went wrong",
-                        error: err_1,
-                    });
+                    errorResponse = {
+                        statusCode: 500,
+                        body: JSON.stringify({
+                            success: false,
+                            message: "An error occurred",
+                            error: err_1.message,
+                        }),
+                    };
+                    // Use the callback function to return the error response
+                    callback(null, errorResponse);
                     return [3 /*break*/, 6];
                 case 6: return [2 /*return*/];
             }
