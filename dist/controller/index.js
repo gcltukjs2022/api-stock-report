@@ -44,7 +44,7 @@ var s3 = new AWS.S3();
 // async function getReport(req: Request, res: Response, next: NextFunction) {
 function getReport(event, context, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, base64Doc, bucketName, key, body, params, err_1, errorResponse;
+        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, doc, bucketName, key, body, params, err_1, errorResponse;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -60,7 +60,7 @@ function getReport(event, context, callback) {
                     hightlightStocksArr = priceResult.filter(function (el) { return Math.abs(el.changePercent) >= 5; });
                     return [4 /*yield*/, (0, generateWord_1.generateWord)(hightlightStocksArr, scrapingResult, priceResult)];
                 case 3:
-                    base64Doc = _a.sent();
+                    doc = _a.sent();
                     // res.status(200).send({
                     //   success: true,
                     //   message: "successful",
@@ -70,7 +70,7 @@ function getReport(event, context, callback) {
                     console.log("----FUNCTION END----");
                     bucketName = "stock-report-bucket";
                     key = "report.docx";
-                    body = base64Doc;
+                    body = doc;
                     params = {
                         Bucket: bucketName,
                         Key: key,

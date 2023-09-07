@@ -27,7 +27,12 @@ async function getReport(event: any, context: any, callback: any) {
     );
 
     // Generate word doc
-    const base64Doc = await generateWord(
+    // const base64Doc = await generateWord(
+    //   hightlightStocksArr,
+    //   scrapingResult,
+    //   priceResult,
+    // );
+    const doc = await generateWord(
       hightlightStocksArr,
       scrapingResult,
       priceResult,
@@ -76,7 +81,7 @@ async function getReport(event: any, context: any, callback: any) {
 
     const bucketName = "stock-report-bucket";
     const key = "report.docx";
-    const body = base64Doc;
+    const body = doc;
 
     const params = {
       Bucket: bucketName,

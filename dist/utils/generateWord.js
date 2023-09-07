@@ -76,9 +76,8 @@ var docx_1 = require("docx");
 var fs = __importStar(require("fs"));
 var moment_1 = __importDefault(require("moment"));
 var path_1 = __importDefault(require("path"));
-var convertDocToBase64_1 = require("./convertDocToBase64");
 var generateWord = function (hightlightStocksArr, scrapingResult, priceResult) { return __awaiter(void 0, void 0, void 0, function () {
-    var hightLightStocksParagraphs, currentDate, currentDayOfMonth, i, articlesParagraphs, i, articles, display, j, firstRow, tableArr, i, doc, filePath, base64Doc;
+    var hightLightStocksParagraphs, currentDate, currentDayOfMonth, i, articlesParagraphs, i, articles, display, j, firstRow, tableArr, i, doc, filePath;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -383,10 +382,7 @@ var generateWord = function (hightlightStocksArr, scrapingResult, priceResult) {
                     })];
             case 1:
                 _a.sent();
-                return [4 /*yield*/, (0, convertDocToBase64_1.convertDocToBase64)()];
-            case 2:
-                base64Doc = _a.sent();
-                return [2 /*return*/, base64Doc];
+                return [2 /*return*/];
         }
     });
 }); };

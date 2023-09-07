@@ -389,7 +389,7 @@ export const generateWord = async (
     fs.writeFileSync(filePath, buffer, { encoding: "binary" });
   });
 
-  const base64Doc = await convertDocToBase64();
+  // const base64Doc = await convertDocToBase64();
 
-  return base64Doc;
+  // return base64Doc;
 };
