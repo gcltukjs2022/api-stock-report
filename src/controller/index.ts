@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { generateWord } from "../utils/generateWord";
 import { getStockPrice } from "../utils/getStockPrice";
 import { getNewsLinks } from "../utils/getNewsLinks";
+import moment from "moment";
+const fs = require("fs");
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
@@ -79,22 +81,60 @@ async function getReport(event: any, context: any, callback: any) {
     //   body: base64Doc,
     // };
 
+    // const today = moment();
+    // const formattedDate = today.format("DDMMYYYY");
+
+    // const bucketName = "stock-report-bucket";
+    // const key = `report${formattedDate}.docx`;
+    // const body = doc;
+
+    // const params = {
+    //   Bucket: bucketName,
+    //   Key: key,
+    //   Body: body,
+    // };
+
+    // await s3.putObject(params).promise();
+    // console.log(`File ${key} uploaded to ${bucketName}`);
+    // return {
+    //   statusCode: 200,
+    //   body: JSON.stringify("File uploaded successfully"),
+    // };
+
+    const today = moment();
+    const formattedDate = today.format("DDMMYYYY");
+
     const bucketName = "stock-report-bucket";
-    const key = "report.docx";
-    const body = doc;
+    const key = `report${formattedDate}.docx`;
+    const filePath = `/tmp/report${formattedDate}.docx`;
 
-    const params = {
-      Bucket: bucketName,
-      Key: key,
-      Body: body,
-    };
+    fs.readFile(filePath, (err: any, data: any) => {
+      if (err) {
+        console.error("Error reading the file:", err);
+        return;
+      }
 
-    await s3.putObject(params).promise();
-    console.log(`File ${key} uploaded to ${bucketName}`);
-    return {
-      statusCode: 200,
-      body: JSON.stringify("File uploaded successfully"),
-    };
+      // Create an instance of the AWS S3 SDK
+      const s3 = new AWS.S3();
+
+      const params = {
+        Bucket: bucketName,
+        Key: key,
+        Body: data, // Set the file data as the Body
+      };
+
+      // Upload the file to S3
+      s3.putObject(params)
+        .promise()
+        .then((res: any) =>
+          console.log(`File ${key} uploaded to ${bucketName}`),
+        );
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify("File uploaded successfully"),
+      };
+    });
   } catch (err: any) {
     console.log("IN ERR: ", err);
 

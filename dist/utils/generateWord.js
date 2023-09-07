@@ -77,7 +77,7 @@ var fs = __importStar(require("fs"));
 var moment_1 = __importDefault(require("moment"));
 var path_1 = __importDefault(require("path"));
 var generateWord = function (hightlightStocksArr, scrapingResult, priceResult) { return __awaiter(void 0, void 0, void 0, function () {
-    var hightLightStocksParagraphs, currentDate, currentDayOfMonth, i, articlesParagraphs, i, articles, display, j, firstRow, tableArr, i, doc, filePath;
+    var hightLightStocksParagraphs, currentDate, currentDayOfMonth, i, articlesParagraphs, i, articles, display, j, firstRow, tableArr, i, doc, today, formattedDate, filePath;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -376,7 +376,9 @@ var generateWord = function (hightlightStocksArr, scrapingResult, priceResult) {
                         },
                     ],
                 });
-                filePath = path_1.default.join("/tmp", "report.docx");
+                today = (0, moment_1.default)();
+                formattedDate = today.format("DDMMYYYY");
+                filePath = path_1.default.join("/tmp", "report".concat(formattedDate, ".docx"));
                 return [4 /*yield*/, docx_1.Packer.toBuffer(doc).then(function (buffer) {
                         fs.writeFileSync(filePath, buffer, { encoding: "binary" });
                     })];

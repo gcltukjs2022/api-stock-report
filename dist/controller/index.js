@@ -35,20 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var generateWord_1 = require("../utils/generateWord");
 var getStockPrice_1 = require("../utils/getStockPrice");
 var getNewsLinks_1 = require("../utils/getNewsLinks");
+var moment_1 = __importDefault(require("moment"));
+var fs = require("fs");
 var AWS = require("aws-sdk");
 var s3 = new AWS.S3();
 // async function getReport(req: Request, res: Response, next: NextFunction) {
 function getReport(event, context, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, doc, bucketName, key, body, params, err_1, errorResponse;
+        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, doc, today, formattedDate, bucketName_1, key_1, filePath, err_1, errorResponse;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 5, , 6]);
+                    _a.trys.push([0, 4, , 5]);
                     return [4 /*yield*/, (0, getStockPrice_1.getStockPrice)()];
                 case 1:
                     priceResult = _a.sent();
@@ -68,23 +73,36 @@ function getReport(event, context, callback) {
                     //   file: base64Doc,
                     // });
                     console.log("----FUNCTION END----");
-                    bucketName = "stock-report-bucket";
-                    key = "report.docx";
-                    body = doc;
-                    params = {
-                        Bucket: bucketName,
-                        Key: key,
-                        Body: body,
-                    };
-                    return [4 /*yield*/, s3.putObject(params).promise()];
-                case 4:
-                    _a.sent();
-                    console.log("File ".concat(key, " uploaded to ").concat(bucketName));
-                    return [2 /*return*/, {
+                    today = (0, moment_1.default)();
+                    formattedDate = today.format("DDMMYYYY");
+                    bucketName_1 = "stock-report-bucket";
+                    key_1 = "report".concat(formattedDate, ".docx");
+                    filePath = "/tmp/report".concat(formattedDate, ".docx");
+                    fs.readFile(filePath, function (err, data) {
+                        if (err) {
+                            console.error("Error reading the file:", err);
+                            return;
+                        }
+                        // Create an instance of the AWS S3 SDK
+                        var s3 = new AWS.S3();
+                        var params = {
+                            Bucket: bucketName_1,
+                            Key: key_1,
+                            Body: data, // Set the file data as the Body
+                        };
+                        // Upload the file to S3
+                        s3.putObject(params)
+                            .promise()
+                            .then(function (res) {
+                            return console.log("File ".concat(key_1, " uploaded to ").concat(bucketName_1));
+                        });
+                        return {
                             statusCode: 200,
                             body: JSON.stringify("File uploaded successfully"),
-                        }];
-                case 5:
+                        };
+                    });
+                    return [3 /*break*/, 5];
+                case 4:
                     err_1 = _a.sent();
                     console.log("IN ERR: ", err_1);
                     errorResponse = {
@@ -97,8 +115,8 @@ function getReport(event, context, callback) {
                     };
                     // Use the callback function to return the error response
                     callback(null, errorResponse);
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });

@@ -382,9 +382,15 @@ export const generateWord = async (
     ],
   });
 
+  // Get the current date
+  const today = moment();
+
+  // Format the current date as 'DDMMYYYY'
+  const formattedDate = today.format("DDMMYYYY");
+
   // Used to export the file into a .docx file
   // const filePath = path.join(__dirname, "../report.docx");
-  const filePath = path.join("/tmp", "report.docx");
+  const filePath = path.join("/tmp", `report${formattedDate}.docx`);
   await Packer.toBuffer(doc).then((buffer) => {
     fs.writeFileSync(filePath, buffer, { encoding: "binary" });
   });
