@@ -45,11 +45,9 @@ var getNewsLinks_1 = require("../utils/getNewsLinks");
 var moment_1 = __importDefault(require("moment"));
 var fs = require("fs");
 var AWS = require("aws-sdk");
-var s3 = new AWS.S3();
-// async function getReport(req: Request, res: Response, next: NextFunction) {
 function getReport(event, context, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, doc, today, formattedDate, bucketName_1, key_1, filePath, err_1, errorResponse;
+        var priceResult, scrapingList, scrapingResult, hightlightStocksArr, today, formattedDate, bucketName_1, key_1, filePath, err_1, errorResponse;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -65,13 +63,7 @@ function getReport(event, context, callback) {
                     hightlightStocksArr = priceResult.filter(function (el) { return Math.abs(el.changePercent) >= 5; });
                     return [4 /*yield*/, (0, generateWord_1.generateWord)(hightlightStocksArr, scrapingResult, priceResult)];
                 case 3:
-                    doc = _a.sent();
-                    // res.status(200).send({
-                    //   success: true,
-                    //   message: "successful",
-                    //   priceResult: priceResult,
-                    //   file: base64Doc,
-                    // });
+                    _a.sent();
                     console.log("----FUNCTION END----");
                     today = (0, moment_1.default)();
                     formattedDate = today.format("DDMMYYYY");
@@ -83,14 +75,12 @@ function getReport(event, context, callback) {
                             console.error("Error reading the file:", err);
                             return;
                         }
-                        // Create an instance of the AWS S3 SDK
                         var s3 = new AWS.S3();
                         var params = {
                             Bucket: bucketName_1,
                             Key: key_1,
-                            Body: data, // Set the file data as the Body
+                            Body: data,
                         };
-                        // Upload the file to S3
                         s3.putObject(params)
                             .promise()
                             .then(function (res) {

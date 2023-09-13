@@ -71,7 +71,7 @@ var getHtml = function (url, retry) {
                     })
                         .on("error", function (error) {
                         reject(error);
-                        console.log(error);
+                        console.log("GET HTML ERROR: ", error);
                     });
                 })];
         });
