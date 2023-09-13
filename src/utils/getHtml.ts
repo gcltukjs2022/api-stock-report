@@ -36,7 +36,7 @@ const getHtml = async (url: any, retry: number = 0) => {
       })
       .on("error", (error: any) => {
         reject(error);
-        console.log(error);
+        console.log("GET HTML ERROR: ", error);
       });
   });
 };
