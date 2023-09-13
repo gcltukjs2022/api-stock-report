@@ -52,7 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getStockPrice = void 0;
 var axios_1 = __importDefault(require("axios"));
-var data_1 = require("../controller/data");
+var data_1 = require("./data");
 var getStockPrice = function () { return __awaiter(void 0, void 0, void 0, function () {
     var symbols, options, response, resArr, priceResult, i, j, combinedObj, err_1;
     return __generator(this, function (_a) {

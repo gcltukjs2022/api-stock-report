@@ -42,9 +42,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNewsLinks = void 0;
 var axios_1 = __importDefault(require("axios"));
 var moment_1 = __importDefault(require("moment"));
-var getHtml_1 = __importDefault(require("./getHtml"));
+var getArticles_1 = __importDefault(require("./getArticles"));
 var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, void 0, function () {
-    var today, workDay, currentDate, saturday, sunday, makeRequest_1, newsLinksPromise, linksArr, articlesArr, i, scrapingArr, j, httpsUrl, scrapingRes, arr, err_1;
+    var today, workDay, currentDate, saturday, sunday, makeRequest_1, newsLinksPromise, linksArr, articlesArr, processArticle, processedArticles, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -56,7 +56,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                 sunday = currentDate.clone().subtract(1, "day").format("YYYYMMDD");
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 7, , 8]);
+                _a.trys.push([1, 4, , 5]);
                 makeRequest_1 = function (el) {
                     return axios_1.default
                         .get("https://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"))
@@ -83,7 +83,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                                     .map(function (el) { return el.replace(/\\/g, ""); })
                                     .filter(function (el) { return el.includes(today); });
                             }
-                            console.log("----LINKS----", links);
+                            // console.log(`----LINKS----`, links);
                             if (links.length > 0) {
                                 var urlRegex_1 = /http[^"]*shtml/g;
                                 var urls = links
@@ -104,7 +104,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                     })
                         .catch(function (err) {
                         // If an error occurs during the request, you can return a default value or handle it accordingly
-                        console.error("GET NEWS LINK ERROR: ", err);
+                        console.error("----MAKE REQUEST ERROR----", err);
                         return { display: el.display, newsLinks: [] };
                     });
                 };
@@ -115,37 +115,129 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
             case 2:
                 linksArr = _a.sent();
                 articlesArr = linksArr.filter(function (el) { return el.newsLinks.length > 0; });
-                i = 0;
-                _a.label = 3;
+                processArticle = function (article) { return __awaiter(void 0, void 0, void 0, function () {
+                    var scrapingArr, scrapingRes, arr;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                console.log("Processing article: ".concat(article.display));
+                                article.news = [];
+                                scrapingArr = article.newsLinks.map(function (newsLink) {
+                                    var httpsUrl = newsLink.replace("http", "https").replace("m", "news");
+                                    return (0, getArticles_1.default)(httpsUrl, article.display);
+                                });
+                                return [4 /*yield*/, Promise.all(scrapingArr)];
+                            case 1:
+                                scrapingRes = _a.sent();
+                                arr = scrapingRes.map(function (el) {
+                                    return { title: el.title, article: el.article.join("").trim("") };
+                                });
+                                article.news = arr;
+                                console.log("Finished processing article: ".concat(article.display));
+                                return [2 /*return*/, article];
+                        }
+                    });
+                }); };
+                return [4 /*yield*/, Promise.all(articlesArr.map(processArticle))];
             case 3:
-                if (!(i < articlesArr.length)) return [3 /*break*/, 6];
-                console.log("IN LOOP ".concat(i, " ").concat(articlesArr[i].display));
-                articlesArr[i].news = [];
-                scrapingArr = [];
-                for (j = 0; j < articlesArr[i].newsLinks.length; j++) {
-                    httpsUrl = articlesArr[i].newsLinks[j]
-                        .replace("http", "https")
-                        .replace("m", "news");
-                    scrapingArr.push((0, getHtml_1.default)(httpsUrl));
-                }
-                return [4 /*yield*/, Promise.all(scrapingArr)];
+                processedArticles = _a.sent();
+                return [2 /*return*/, processedArticles];
             case 4:
-                scrapingRes = _a.sent();
-                arr = scrapingRes.map(function (el) {
-                    return { title: el.title, article: el.article.join("").trim("") };
-                });
-                articlesArr[i].news = arr;
-                _a.label = 5;
-            case 5:
-                i++;
-                return [3 /*break*/, 3];
-            case 6: return [2 /*return*/, articlesArr];
-            case 7:
                 err_1 = _a.sent();
-                console.log("IN ERR: ", err_1);
-                return [3 /*break*/, 8];
-            case 8: return [2 /*return*/];
+                console.log("----IN ERR----", err_1);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
 exports.getNewsLinks = getNewsLinks;
+// import axios from "axios";
+// import moment from "moment";
+// import getHtml from "./getHtml";
+// export const getNewsLinks = async (scrapingList: any) => {
+//   console.log("-----GET NEWS LINKS FUNCTION START-----");
+//   const today = moment(new Date()).format("YYYYMMDD");
+//   const workDay = moment(new Date()).format("dddd");
+//   const currentDate = moment();
+//   const saturday = currentDate.clone().subtract(2, "days").format("YYYYMMDD");
+//   const sunday = currentDate.clone().subtract(1, "day").format("YYYYMMDD");
+//   try {
+//     const makeRequest: any = (el: any) => {
+//       return axios
+//         .get(`https://m.0033.com/list/sm/sc/${el.newsParam}.jsonp`)
+//         .then((response: any) => {
+//           console.log(`----JSON STATUS ${el.display}----`, response.status);
+//           if (response.status === 200) {
+//             const resArr = JSON.stringify(response.data).split(",");
+//             const stockObj: any = {
+//               display: el.display,
+//               newsLinks: [],
+//             };
+//             let links;
+//             if (workDay === "Monday") {
+//               links = resArr
+//                 .map((el) => el.replace(/\\/g, ""))
+//                 .filter(
+//                   (el) =>
+//                     el.includes(today) ||
+//                     el.includes(saturday) ||
+//                     el.includes(sunday),
+//                 );
+//             } else {
+//               links = resArr
+//                 .map((el) => el.replace(/\\/g, ""))
+//                 .filter((el) => el.includes(today));
+//             }
+//             console.log(`----LINKS----`, links);
+//             if (links.length > 0) {
+//               const urlRegex = /http[^"]*shtml/g;
+//               const urls = links
+//                 .map((el) => {
+//                   const match = el.match(urlRegex);
+//                   return match ? match[0] : null;
+//                 })
+//                 .filter((el) => el !== null);
+//               stockObj.newsLinks = urls;
+//             }
+//             return stockObj;
+//           } else {
+//             // Retry the request after a delay using recursion
+//             console.log(`Retrying request for ${el.display}`);
+//             return makeRequest(el);
+//           }
+//         })
+//         .catch((err) => {
+//           // If an error occurs during the request, you can return a default value or handle it accordingly
+//           console.error("GET NEWS LINK ERROR: ", err);
+//           return { display: el.display, newsLinks: [] };
+//         });
+//     };
+//     const newsLinksPromise = Promise.all(
+//       scrapingList.map((el: any, i: number) => {
+//         return makeRequest(el);
+//       }),
+//     );
+//     const linksArr = await newsLinksPromise;
+//     const articlesArr = linksArr.filter((el: any) => el.newsLinks.length > 0);
+//     for (let i = 0; i < articlesArr.length; i++) {
+//       console.log(`IN LOOP ${i} ${articlesArr[i].display}`);
+//       articlesArr[i].news = [];
+//       let scrapingArr = [];
+//       for (let j = 0; j < articlesArr[i].newsLinks.length; j++) {
+//         const httpsUrl = articlesArr[i].newsLinks[j]
+//           .replace("http", "https")
+//           .replace("m", "news");
+//         scrapingArr.push(getHtml(httpsUrl));
+//       }
+//       const scrapingRes = await Promise.all(scrapingArr);
+//       const arr = scrapingRes.map((el: any) => {
+//         return { title: el.title, article: el.article.join("").trim("") };
+//       });
+//       articlesArr[i].news = arr;
+//     }
+//     return articlesArr;
+//   } catch (err) {
+//     console.log("IN ERR: ", err);
+//     // throw err;
+//   }
+// };

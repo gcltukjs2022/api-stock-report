@@ -1,5 +1,5 @@
 import axios from "axios";
-import { data, iData } from "../controller/data";
+import { data, iData } from "./data";
 
 export const getStockPrice = async () => {
   try {

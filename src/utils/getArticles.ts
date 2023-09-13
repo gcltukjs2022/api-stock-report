@@ -2,16 +2,18 @@ const iconv = require("iconv-lite");
 const https = require("https");
 const cheerio = require("cheerio");
 
-const getHtml = async (url: any, retry: number = 0) => {
+const getArticles = async (url: any, name: any, retry: number = 0) => {
   return new Promise((resolve, reject) => {
     https
       .get(url, (res: any) => {
-        console.log("----ARTICLE STATUS----", res.statusCode);
         const chunks: any = [];
-
-        // if (res.statusCode !== 200 && retry < 10) {
-        //   return getHtml(url, retry++);
-        // }
+        if (res.statusCode !== 200 && retry < 10) {
+          console.log(
+            `----${name} GET ARTICLE ERROR ON ${retry} RETRY----`,
+            res.statusCode,
+          );
+          return getArticles(url, retry++);
+        }
 
         res.on("data", (chunk: any) => {
           chunks.push(chunk);
@@ -35,13 +37,13 @@ const getHtml = async (url: any, retry: number = 0) => {
         });
       })
       .on("error", (error: any) => {
+        console.log("----GET ARTICLE ERROR----", error);
         reject(error);
-        console.log("GET HTML ERROR: ", error);
       });
   });
 };
 
-export default getHtml;
+export default getArticles;
 
 // const getHtml = async (url: any) => {
 //   return new Promise((resolve, reject) => {

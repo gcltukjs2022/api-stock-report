@@ -39,18 +39,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var iconv = require("iconv-lite");
 var https = require("https");
 var cheerio = require("cheerio");
-var getHtml = function (url, retry) {
+var getArticles = function (url, name, retry) {
     if (retry === void 0) { retry = 0; }
     return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     https
                         .get(url, function (res) {
-                        console.log("----ARTICLE STATUS----", res.statusCode);
                         var chunks = [];
-                        // if (res.statusCode !== 200 && retry < 10) {
-                        //   return getHtml(url, retry++);
-                        // }
+                        if (res.statusCode !== 200 && retry < 10) {
+                            console.log("----".concat(name, " GET ARTICLE ERROR ON ").concat(retry, " RETRY----"), res.statusCode);
+                            return getArticles(url, retry++);
+                        }
                         res.on("data", function (chunk) {
                             chunks.push(chunk);
                         });
@@ -70,14 +70,14 @@ var getHtml = function (url, retry) {
                         });
                     })
                         .on("error", function (error) {
+                        console.log("----GET ARTICLE ERROR----", error);
                         reject(error);
-                        console.log("GET HTML ERROR: ", error);
                     });
                 })];
         });
     });
 };
-exports.default = getHtml;
+exports.default = getArticles;
 // const getHtml = async (url: any) => {
 //   return new Promise((resolve, reject) => {
 //     https
