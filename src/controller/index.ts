@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { generateWord } from "../utils/generateWord";
 import { getStockPrice } from "../utils/getStockPrice";
 import { getNewsLinks } from "../utils/getNewsLinks";
+import { testPriceResult } from "./testData";
 
 async function getReport(req: Request, res: Response, next: NextFunction) {
   console.log("-----FUNTION START-----");

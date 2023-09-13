@@ -41,7 +41,7 @@ export const getNewsLinks = async (scrapingList: any) => {
                 .filter((el) => el.includes(today));
             }
 
-            console.log(`----LINKS----`, links);
+            // console.log(`----LINKS----`, links);
 
             if (links.length > 0) {
               const urlRegex = /http[^"]*shtml/g;
@@ -63,7 +63,7 @@ export const getNewsLinks = async (scrapingList: any) => {
         })
         .catch((err) => {
           // If an error occurs during the request, you can return a default value or handle it accordingly
-          console.error(err);
+          console.error("MAKE REQUEST ERROR: ", err);
           return { display: el.display, newsLinks: [] };
         });
     };
@@ -76,26 +76,56 @@ export const getNewsLinks = async (scrapingList: any) => {
 
     const linksArr = await newsLinksPromise;
 
-    const articlesArr = linksArr.filter((el: any) => el.newsLinks.length > 0);
+    // const articlesArr = linksArr.filter((el: any) => el.newsLinks.length > 0);
 
-    for (let i = 0; i < articlesArr.length; i++) {
-      console.log(`IN LOOP ${i} ${articlesArr[i].display}`);
-      articlesArr[i].news = [];
-      let scrapingArr = [];
-      for (let j = 0; j < articlesArr[i].newsLinks.length; j++) {
-        const httpsUrl = articlesArr[i].newsLinks[j]
-          .replace("http", "https")
-          .replace("m", "news");
-        scrapingArr.push(getHtml(httpsUrl));
-      }
+    // for (let i = 0; i < articlesArr.length; i++) {
+    //   console.log(`IN LOOP ${i} ${articlesArr[i].display}`);
+    //   articlesArr[i].news = [];
+    //   let scrapingArr = [];
+    //   for (let j = 0; j < articlesArr[i].newsLinks.length; j++) {
+    //     const httpsUrl = articlesArr[i].newsLinks[j]
+    //       .replace("http", "https")
+    //       .replace("m", "news");
+    //     scrapingArr.push(getHtml(httpsUrl));
+    //   }
 
+    //   const scrapingRes = await Promise.all(scrapingArr);
+    //   const arr = scrapingRes.map((el: any) => {
+    //     return { title: el.title, article: el.article.join("").trim("") };
+    //   });
+    //   articlesArr[i].news = arr;
+    // }
+    // return articlesArr;
+
+    const articlesArr = linksArr.filter((el) => el.newsLinks.length > 0);
+
+    const processArticle = async (article: any) => {
+      console.log(`Processing article: ${article.display}`);
+      article.news = [];
+
+      // Create an array to store promises for scraping
+      const scrapingArr = article.newsLinks.map((newsLink: any) => {
+        const httpsUrl = newsLink.replace("http", "https").replace("m", "news");
+        return getHtml(httpsUrl);
+      });
+
+      // Use Promise.all to fetch all the articles concurrently
       const scrapingRes = await Promise.all(scrapingArr);
-      const arr = scrapingRes.map((el: any) => {
+      const arr = scrapingRes.map((el) => {
         return { title: el.title, article: el.article.join("").trim("") };
       });
-      articlesArr[i].news = arr;
-    }
-    return articlesArr;
+      article.news = arr;
+
+      console.log(`Finished processing article: ${article.display}`);
+      return article;
+    };
+
+    // Use Promise.all to execute all articles concurrently
+    const processedArticles = await Promise.all(
+      articlesArr.map(processArticle),
+    );
+
+    return processedArticles;
   } catch (err) {
     console.log("IN ERR: ", err);
     throw err; // Rethrow the error to propagate it upwards if needed

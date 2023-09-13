@@ -44,7 +44,7 @@ var axios_1 = __importDefault(require("axios"));
 var moment_1 = __importDefault(require("moment"));
 var getHtml_1 = __importDefault(require("./getHtml"));
 var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, void 0, function () {
-    var today, workDay, currentDate, saturday, sunday, makeRequest_1, newsLinksPromise, linksArr, articlesArr, i, scrapingArr, j, httpsUrl, scrapingRes, arr, err_1;
+    var today, workDay, currentDate, saturday, sunday, makeRequest_1, newsLinksPromise, linksArr, articlesArr, processArticle, processedArticles, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -56,7 +56,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                 sunday = currentDate.clone().subtract(1, "day").format("YYYYMMDD");
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 7, , 8]);
+                _a.trys.push([1, 4, , 5]);
                 makeRequest_1 = function (el) {
                     return axios_1.default
                         .get("https://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"))
@@ -83,7 +83,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                                     .map(function (el) { return el.replace(/\\/g, ""); })
                                     .filter(function (el) { return el.includes(today); });
                             }
-                            console.log("----LINKS----", links);
+                            // console.log(`----LINKS----`, links);
                             if (links.length > 0) {
                                 var urlRegex_1 = /http[^"]*shtml/g;
                                 var urls = links
@@ -104,7 +104,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                     })
                         .catch(function (err) {
                         // If an error occurs during the request, you can return a default value or handle it accordingly
-                        console.error(err);
+                        console.error("MAKE REQUEST ERROR: ", err);
                         return { display: el.display, newsLinks: [] };
                     });
                 };
@@ -115,36 +115,38 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
             case 2:
                 linksArr = _a.sent();
                 articlesArr = linksArr.filter(function (el) { return el.newsLinks.length > 0; });
-                i = 0;
-                _a.label = 3;
+                processArticle = function (article) { return __awaiter(void 0, void 0, void 0, function () {
+                    var scrapingArr, scrapingRes, arr;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                console.log("Processing article: ".concat(article.display));
+                                article.news = [];
+                                scrapingArr = article.newsLinks.map(function (newsLink) {
+                                    var httpsUrl = newsLink.replace("http", "https").replace("m", "news");
+                                    return (0, getHtml_1.default)(httpsUrl);
+                                });
+                                return [4 /*yield*/, Promise.all(scrapingArr)];
+                            case 1:
+                                scrapingRes = _a.sent();
+                                arr = scrapingRes.map(function (el) {
+                                    return { title: el.title, article: el.article.join("").trim("") };
+                                });
+                                article.news = arr;
+                                console.log("Finished processing article: ".concat(article.display));
+                                return [2 /*return*/, article];
+                        }
+                    });
+                }); };
+                return [4 /*yield*/, Promise.all(articlesArr.map(processArticle))];
             case 3:
-                if (!(i < articlesArr.length)) return [3 /*break*/, 6];
-                console.log("IN LOOP ".concat(i, " ").concat(articlesArr[i].display));
-                articlesArr[i].news = [];
-                scrapingArr = [];
-                for (j = 0; j < articlesArr[i].newsLinks.length; j++) {
-                    httpsUrl = articlesArr[i].newsLinks[j]
-                        .replace("http", "https")
-                        .replace("m", "news");
-                    scrapingArr.push((0, getHtml_1.default)(httpsUrl));
-                }
-                return [4 /*yield*/, Promise.all(scrapingArr)];
+                processedArticles = _a.sent();
+                return [2 /*return*/, processedArticles];
             case 4:
-                scrapingRes = _a.sent();
-                arr = scrapingRes.map(function (el) {
-                    return { title: el.title, article: el.article.join("").trim("") };
-                });
-                articlesArr[i].news = arr;
-                _a.label = 5;
-            case 5:
-                i++;
-                return [3 /*break*/, 3];
-            case 6: return [2 /*return*/, articlesArr];
-            case 7:
                 err_1 = _a.sent();
                 console.log("IN ERR: ", err_1);
                 throw err_1; // Rethrow the error to propagate it upwards if needed
-            case 8: return [2 /*return*/];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
