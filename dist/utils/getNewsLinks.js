@@ -44,7 +44,7 @@ var axios_1 = __importDefault(require("axios"));
 var moment_1 = __importDefault(require("moment"));
 var getArticles_1 = __importDefault(require("./getArticles"));
 var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, void 0, function () {
-    var today, workDay, currentDate, saturday, sunday, makeRequest_1, newsLinksPromise, linksArr, articlesArr, processArticle, processedArticles, err_1;
+    var today, workDay, currentDate, saturday, sunday, userAgentList, makeRequest_1, newsLinksPromise, linksArr, articlesArr, processArticle, processedArticles, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -54,58 +54,85 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                 currentDate = (0, moment_1.default)();
                 saturday = currentDate.clone().subtract(2, "days").format("YYYYMMDD");
                 sunday = currentDate.clone().subtract(1, "day").format("YYYYMMDD");
+                userAgentList = [
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+                    "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1",
+                    "Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 Edg/87.0.664.75",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363",
+                ];
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
-                makeRequest_1 = function (el) {
+                makeRequest_1 = function (el, retry) {
+                    if (retry === void 0) { retry = 0; }
+                    var randomIndex = Math.floor(Math.random() * userAgentList.length);
+                    var randomUserAgent = userAgentList[randomIndex];
+                    var config = {
+                        headers: {
+                            "User-Agent": randomUserAgent,
+                        },
+                        timeout: 5000,
+                    };
                     return axios_1.default
-                        .get("https://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"))
+                        .get("http://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"), config)
                         .then(function (response) {
                         console.log("----JSON STATUS ".concat(el.display, "----"), response.status);
-                        if (response.status === 200) {
-                            var resArr = JSON.stringify(response.data).split(",");
-                            var stockObj = {
-                                display: el.display,
-                                newsLinks: [],
-                            };
-                            var links = void 0;
-                            if (workDay === "Monday") {
-                                links = resArr
-                                    .map(function (el) { return el.replace(/\\/g, ""); })
-                                    .filter(function (el) {
-                                    return el.includes(today) ||
-                                        el.includes(saturday) ||
-                                        el.includes(sunday);
-                                });
-                            }
-                            else {
-                                links = resArr
-                                    .map(function (el) { return el.replace(/\\/g, ""); })
-                                    .filter(function (el) { return el.includes(today); });
-                            }
-                            // console.log(`----LINKS----`, links);
-                            if (links.length > 0) {
-                                var urlRegex_1 = /http[^"]*shtml/g;
-                                var urls = links
-                                    .map(function (el) {
-                                    var match = el.match(urlRegex_1);
-                                    return match ? match[0] : null;
-                                })
-                                    .filter(function (el) { return el !== null; });
-                                stockObj.newsLinks = urls;
-                            }
-                            return stockObj;
+                        if (response.status !== 200 && retry < 10) {
+                            console.log("----".concat(el.display, " MAKE REQUEST ERROR ON ").concat(retry, " RETRY----"), response.status);
+                            return makeRequest_1(el, ++retry);
+                        }
+                        else if (retry === 10) {
+                            console.log("----".concat(el.display, " REACH 10 RETRY----"));
+                            return { display: el.display, newsLinks: [] };
                         }
                         else {
-                            // Retry the request after a delay using recursion
-                            console.log("Retrying request for ".concat(el.display));
-                            return makeRequest_1(el);
+                            if (response.status === 200) {
+                                var resArr = JSON.stringify(response.data).split(",");
+                                var stockObj = {
+                                    display: el.display,
+                                    newsLinks: [],
+                                };
+                                var links = void 0;
+                                if (workDay === "Monday") {
+                                    links = resArr
+                                        .map(function (el) { return el.replace(/\\/g, ""); })
+                                        .filter(function (el) {
+                                        return el.includes(today) ||
+                                            el.includes(saturday) ||
+                                            el.includes(sunday);
+                                    });
+                                }
+                                else {
+                                    links = resArr
+                                        .map(function (el) { return el.replace(/\\/g, ""); })
+                                        .filter(function (el) { return el.includes(today); });
+                                }
+                                // console.log(`----LINKS----`, links);
+                                if (links.length > 0) {
+                                    var urlRegex_1 = /http[^"]*shtml/g;
+                                    var urls = links
+                                        .map(function (el) {
+                                        var match = el.match(urlRegex_1);
+                                        return match ? match[0] : null;
+                                    })
+                                        .filter(function (el) { return el !== null; });
+                                    stockObj.newsLinks = urls;
+                                }
+                                return stockObj;
+                            }
+                            else {
+                                // Retry the request after a delay using recursion
+                                console.log("Retrying request for ".concat(el.display));
+                                // return makeRequest(el, ++retry);
+                            }
                         }
                     })
                         .catch(function (err) {
                         // If an error occurs during the request, you can return a default value or handle it accordingly
-                        console.error("----MAKE REQUEST ERROR----", err);
-                        return { display: el.display, newsLinks: [] };
+                        console.error("----".concat(el.display, " MAKE REQUEST ERROR----"), err);
+                        return makeRequest_1(el, ++retry);
+                        // return { display: el.display, newsLinks: [] };
                     });
                 };
                 newsLinksPromise = Promise.all(scrapingList.map(function (el, i) {
@@ -114,6 +141,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                 return [4 /*yield*/, newsLinksPromise];
             case 2:
                 linksArr = _a.sent();
+                console.log("---- FINISH SCRAPING ALL NEWS LINK ----");
                 articlesArr = linksArr.filter(function (el) { return el.newsLinks.length > 0; });
                 processArticle = function (article) { return __awaiter(void 0, void 0, void 0, function () {
                     var scrapingArr, scrapingRes, arr;
@@ -123,12 +151,16 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                                 console.log("Processing article: ".concat(article.display));
                                 article.news = [];
                                 scrapingArr = article.newsLinks.map(function (newsLink) {
-                                    var httpsUrl = newsLink.replace("http", "https").replace("m", "news");
-                                    return (0, getArticles_1.default)(httpsUrl, article.display);
+                                    // const httpsUrl = newsLink.replace("http", "https").replace("m", "news");
+                                    // const httpsUrl = newsLink.replace("http", "https");
+                                    var url = newsLink.replace("m", "news");
+                                    // console.log(article.display, httpsUrl, "<<<<<<<<<<<<<<");
+                                    return (0, getArticles_1.default)(url, article.display);
                                 });
                                 return [4 /*yield*/, Promise.all(scrapingArr)];
                             case 1:
                                 scrapingRes = _a.sent();
+                                console.log("---- FINISH SCRAPING ARTICLES FOR ".concat(article.display, "----"));
                                 arr = scrapingRes.map(function (el) {
                                     return { title: el.title, article: el.article.join("").trim("") };
                                 });
@@ -141,6 +173,8 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                 return [4 /*yield*/, Promise.all(articlesArr.map(processArticle))];
             case 3:
                 processedArticles = _a.sent();
+                console.log("---- PROCESSED ARTICLES ----", processedArticles);
+                console.log("---- FINISH ALL PROCESSED ARTICLES");
                 return [2 /*return*/, processedArticles];
             case 4:
                 err_1 = _a.sent();

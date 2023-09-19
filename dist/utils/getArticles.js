@@ -35,48 +35,135 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var axios_1 = __importDefault(require("axios"));
 var iconv = require("iconv-lite");
 var https = require("https");
 var cheerio = require("cheerio");
 var getArticles = function (url, name, retry) {
     if (retry === void 0) { retry = 0; }
     return __awaiter(void 0, void 0, void 0, function () {
+        var userAgentList, randomIndex, randomUserAgent, config, response, decodedData, $_1, title, parentElement, pTags, article, error_1;
         return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    https
-                        .get(url, function (res) {
-                        var chunks = [];
-                        if (res.statusCode !== 200 && retry < 10) {
-                            console.log("----".concat(name, " GET ARTICLE ERROR ON ").concat(retry, " RETRY----"), res.statusCode);
-                            return getArticles(url, retry++);
-                        }
-                        res.on("data", function (chunk) {
-                            chunks.push(chunk);
-                        });
-                        res.on("end", function () {
-                            var buffer = Buffer.concat(chunks);
-                            var decodedData = iconv.decode(buffer, "gbk");
-                            var $ = cheerio.load(decodedData);
-                            var title = $(".main-title").text();
-                            var parentElement = $(".main-text");
-                            var pTags = parentElement.find("p");
-                            var article = pTags
-                                .map(function (index, element) {
-                                return $(element).text();
-                            })
-                                .get();
-                            resolve({ title: title, article: article });
-                        });
-                    })
-                        .on("error", function (error) {
-                        console.log("----GET ARTICLE ERROR----", error);
-                        reject(error);
-                    });
-                })];
+            switch (_a.label) {
+                case 0:
+                    userAgentList = [
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+                        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1",
+                        "Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 Edg/87.0.664.75",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363",
+                    ];
+                    randomIndex = Math.floor(Math.random() * userAgentList.length);
+                    randomUserAgent = userAgentList[randomIndex];
+                    config = {
+                        responseType: "arraybuffer",
+                        headers: {
+                            "User-Agent": randomUserAgent,
+                        },
+                        timeout: 5000,
+                    };
+                    // const modifiedUrl = url.replace("http", "https").replace("m", "news");
+                    console.log(url);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, axios_1.default.get(url, config)];
+                case 2:
+                    response = _a.sent();
+                    if (response.status !== 200 && retry < 10) {
+                        console.log("----".concat(name, " GET ARTICLE ERROR ON ").concat(retry, " RETRY----"), response.status);
+                        return [2 /*return*/, getArticles(url, name, retry + 1)];
+                    }
+                    else if (retry === 10) {
+                        console.log("".concat(name, " REACH RETURN EMPTY 1"));
+                        return [2 /*return*/, Promise.resolve({ title: "", article: [] })];
+                    }
+                    else {
+                        decodedData = iconv.decode(response.data, "gbk");
+                        $_1 = cheerio.load(decodedData);
+                        title = $_1(".main-title").text();
+                        parentElement = $_1(".main-text");
+                        pTags = parentElement.find("p");
+                        article = pTags
+                            .map(function (index, element) {
+                            return $_1(element).text();
+                        })
+                            .get();
+                        return [2 /*return*/, Promise.resolve({ title: title, article: article })];
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    console.log("----".concat(name, " GET ARTICLE ERROR RETRY: ").concat(retry), error_1);
+                    if (retry < 10) {
+                        return [2 /*return*/, getArticles(url, name, retry + 1)];
+                    }
+                    else {
+                        return [2 /*return*/, Promise.resolve({ title: "", article: [] })];
+                    }
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
         });
     });
 };
+// const getArticles = async (url: any, name: any, retry: number = 0) => {
+//   return new Promise((resolve, reject) => {
+//     const url = url.replace("http", "https").replace("m", "news");
+//     https
+//       .get(url, (res: any) => {
+//         const chunks: any = [];
+//         console.log("---- URL ----", url);
+//         // console.log(`----${retry}, THIS IS THE RETRY NUMBER----`);
+//         if (res.statusCode !== 200 && retry < 10) {
+//           console.log(
+//             `----${name} GET ARTICLE ERROR ON ${retry} RETRY----`,
+//             res.statusCode,
+//           );
+//           return getArticles(url, name, ++retry);
+//         } else if (retry === 10) {
+//           console.log(`${name} REACH RETURN EMPTY 1`);
+//           return resolve({ title: "", article: [] });
+//         } else {
+//           res.on("data", (chunk: any) => {
+//             chunks.push(chunk);
+//           });
+//           res.on("end", () => {
+//             const buffer = Buffer.concat(chunks);
+//             const decodedData = iconv.decode(buffer, "gbk");
+//             const $ = cheerio.load(decodedData);
+//             const title = $(".main-title").text();
+//             const parentElement = $(".main-text");
+//             // const title = $(".title").text();
+//             // const parentElement = $(".page_content");
+//             // const title = $(".big-title").text();
+//             // const parentElement = $(".result-container");
+//             const pTags = parentElement.find("p");
+//             const article = pTags
+//               .map((index: any, element: any) => {
+//                 return $(element).text();
+//               })
+//               .get();
+//             resolve({ title: title, article: article });
+//           });
+//         }
+//       })
+//       .on("error", (error: any) => {
+//         console.log(`----${name} GET ARTICLE ERROR`, error);
+//         // reject(error);
+//         console.log("REACH RETURN EMPTY 2");
+//         if (retry < 10) {
+//           return getArticles(url, name, retry + 1);
+//         } else {
+//           return resolve({ title: "", article: [] });
+//         }
+//       });
+//   });
+// };
 exports.default = getArticles;
 // const getHtml = async (url: any) => {
 //   return new Promise((resolve, reject) => {

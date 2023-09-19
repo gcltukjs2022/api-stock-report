@@ -41,16 +41,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var AWS = require("aws-sdk");
+var util = require("util");
+var readFileAsync = util.promisify(fs.readFile);
 var moment_1 = __importDefault(require("moment"));
 var generateWord_1 = require("./utils/generateWord");
 var getNewsLinks_1 = require("./utils/getNewsLinks");
 var getStockPrice_1 = require("./utils/getStockPrice");
 module.exports.handler = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
-    var priceResult, scrapingList, scrapingResult, hightlightStocksArr, today, formattedDate, bucketName_1, key_1, filePath, err_1, errorResponse;
+    var priceResult, scrapingList, scrapingResult, hightlightStocksArr, today, formattedDate, bucketName, key, filePath, data, s3, params, responseBody, response, err_1, errorResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 4, , 5]);
+                _a.trys.push([0, 6, , 7]);
                 return [4 /*yield*/, (0, getStockPrice_1.getStockPrice)()];
             case 1:
                 priceResult = _a.sent();
@@ -63,43 +65,37 @@ module.exports.handler = function (event, context, callback) { return __awaiter(
                 return [4 /*yield*/, (0, generateWord_1.generateWord)(hightlightStocksArr, scrapingResult, priceResult)];
             case 3:
                 _a.sent();
-                console.log("----FUNCTION END----");
                 today = (0, moment_1.default)();
                 formattedDate = today.format("DDMMYYYY");
-                bucketName_1 = "stock-report-bucket";
-                key_1 = "report".concat(formattedDate, ".docx");
+                bucketName = "stock-report-bucket";
+                key = "report".concat(formattedDate, ".docx");
                 filePath = "/tmp/report".concat(formattedDate, ".docx");
-                fs.readFile(filePath, function (err, data) {
-                    if (err) {
-                        console.error("Error reading the file:", err);
-                        return;
-                    }
-                    var s3 = new AWS.S3();
-                    var params = {
-                        Bucket: bucketName_1,
-                        Key: key_1,
-                        Body: data,
-                    };
-                    s3.putObject(params)
-                        .promise()
-                        .then(function (res) {
-                        return console.log("File ".concat(key_1, " uploaded to ").concat(bucketName_1));
-                    });
-                    var responseBody = {
-                        message: "Hello from Lambda",
-                    };
-                    var response = {
-                        statusCode: 200,
-                        body: JSON.stringify(responseBody),
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    };
-                    //   return response;
-                    callback(null, response);
-                });
-                return [3 /*break*/, 5];
+                return [4 /*yield*/, readFileAsync(filePath)];
             case 4:
+                data = _a.sent();
+                s3 = new AWS.S3();
+                params = {
+                    Bucket: bucketName,
+                    Key: key,
+                    Body: data,
+                };
+                return [4 /*yield*/, s3.putObject(params).promise()];
+            case 5:
+                _a.sent(); // Use async/await for S3 operation
+                console.log("File ".concat(key, " uploaded to ").concat(bucketName));
+                responseBody = {
+                    message: "Hello from Lambda",
+                };
+                response = {
+                    statusCode: 200,
+                    body: JSON.stringify(responseBody),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+                console.log("----FUNCTION END----");
+                return [2 /*return*/, response];
+            case 6:
                 err_1 = _a.sent();
                 console.log("IN ERR: ", err_1);
                 errorResponse = {
@@ -112,8 +108,8 @@ module.exports.handler = function (event, context, callback) { return __awaiter(
                 };
                 // Use the callback function to return the error response
                 callback(null, errorResponse);
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); };
