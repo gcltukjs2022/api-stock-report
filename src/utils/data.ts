@@ -374,4 +374,15 @@ export const data: iData[] = [
     display: "Citibank（C）",
     newsParam: "C_1",
   },
+  {
+    name: "極智嘉",
+    type: "N/A",
+    ticker: "2590.HK",
+    param: "hk_HK2590",
+    currency: "HKD",
+    yahooSymbol: "2590.HK",
+    yahooName: "Beijing Geekplus Technology Co., Ltd.",
+    display: "極智嘉（2590.HK）",
+    newsParam: "HK2590_1",
+  },
 ];
