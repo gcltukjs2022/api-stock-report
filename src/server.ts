@@ -15,6 +15,8 @@ module.exports.handler = async (event: any, context: any, callback: any) => {
       (el: any) => el.newsParam.length > 0,
     );
 
+    console.log("Scraping List: ", scrapingList);
+
     const scrapingResult: any = await getNewsLinks(scrapingList);
 
     console.log("----SCRAPING COMPLETED----");

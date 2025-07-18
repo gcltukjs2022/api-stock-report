@@ -57,6 +57,7 @@ module.exports.handler = function (event, context, callback) { return __awaiter(
             case 1:
                 priceResult = _a.sent();
                 scrapingList = priceResult.filter(function (el) { return el.newsParam.length > 0; });
+                console.log("Scraping List: ", scrapingList);
                 return [4 /*yield*/, (0, getNewsLinks_1.getNewsLinks)(scrapingList)];
             case 2:
                 scrapingResult = _a.sent();

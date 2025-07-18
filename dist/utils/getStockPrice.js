@@ -54,12 +54,13 @@ exports.getStockPrice = void 0;
 var axios_1 = __importDefault(require("axios"));
 var data_1 = require("./data");
 var getStockPrice = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var symbols, options, response, resArr, priceResult, i, j, combinedObj, err_1;
+    var symbols, options, response, resArr, priceResult, i, obj, combinedObj, j, combinedObj, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 symbols = data_1.data.map(function (el) { return el.yahooSymbol; }).join(",");
+                console.log("Symbols: ", symbols);
                 options = {
                     method: "GET",
                     url: process.env.YAHOO_API,
@@ -79,6 +80,14 @@ var getStockPrice = function () { return __awaiter(void 0, void 0, void 0, funct
                 resArr = response.data.quoteResponse.result;
                 priceResult = [];
                 for (i = 0; i < resArr.length; i++) {
+                    // Hard code GEEKPLUS-W because its resuslt does not have shortName variable
+                    if (resArr[i].shortName === "GEEKPLUS-W") {
+                        console.log("In GEEKPLUS-W");
+                        obj = data_1.data.find(function (el) { return el.yahooSymbol === "2590.HK"; });
+                        combinedObj = __assign({ marketPrice: resArr[i].regularMarketPrice, changePercent: resArr[i].regularMarketChangePercent }, obj);
+                        console.log("GEEKPLUS-W Combined Obj: ", combinedObj);
+                        priceResult.push(combinedObj);
+                    }
                     for (j = 0; j < resArr.length; j++) {
                         if (resArr[i].longName === data_1.data[j].yahooName) {
                             combinedObj = __assign({ marketPrice: resArr[i].regularMarketPrice, changePercent: resArr[i].regularMarketChangePercent }, data_1.data[j]);
@@ -86,6 +95,7 @@ var getStockPrice = function () { return __awaiter(void 0, void 0, void 0, funct
                         }
                     }
                 }
+                console.log("Price result: ", priceResult);
                 return [2 /*return*/, priceResult];
             case 2:
                 err_1 = _a.sent();
