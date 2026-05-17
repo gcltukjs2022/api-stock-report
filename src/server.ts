@@ -7,7 +7,7 @@ import { generateWord } from "./utils/generateWord";
 import { getNewsLinks } from "./utils/getNewsLinks";
 import { getStockPrice } from "./utils/getStockPrice";
 
-module.exports.handler = async (event: any, context: any, callback: any) => {
+module.exports.handler = async (event: any, context: any) => {
   try {
     const priceResult: any = await getStockPrice();
 
@@ -97,6 +97,7 @@ module.exports.handler = async (event: any, context: any, callback: any) => {
     };
 
     // Use the callback function to return the error response
-    callback(null, errorResponse);
+    // callback(null, errorResponse);
+    return errorResponse;
   }
 };
