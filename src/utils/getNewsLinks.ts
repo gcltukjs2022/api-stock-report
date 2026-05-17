@@ -28,7 +28,7 @@ export const getNewsLinks = async (scrapingList: any) => {
         headers: {
           "User-Agent": randomUserAgent,
         },
-        timeout: 5000,
+        timeout: 15000,
       };
 
       return axios

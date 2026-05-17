@@ -19,7 +19,7 @@ const getArticles: any = async (url: any, name: any, retry = 0) => {
     headers: {
       "User-Agent": randomUserAgent,
     },
-    timeout: 5000,
+    timeout: 15000,
   };
   // const modifiedUrl = url.replace("http", "https").replace("m", "news");
 
