@@ -47,7 +47,7 @@ var moment_1 = __importDefault(require("moment"));
 var generateWord_1 = require("./utils/generateWord");
 var getNewsLinks_1 = require("./utils/getNewsLinks");
 var getStockPrice_1 = require("./utils/getStockPrice");
-module.exports.handler = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
+module.exports.handler = function (event, context) { return __awaiter(void 0, void 0, void 0, function () {
     var priceResult, scrapingList, scrapingResult, hightlightStocksArr, today, formattedDate, bucketName, key, filePath, data, s3, params, responseBody, response, err_1, errorResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -108,8 +108,8 @@ module.exports.handler = function (event, context, callback) { return __awaiter(
                     }),
                 };
                 // Use the callback function to return the error response
-                callback(null, errorResponse);
-                return [3 /*break*/, 7];
+                // callback(null, errorResponse);
+                return [2 /*return*/, errorResponse];
             case 7: return [2 /*return*/];
         }
     });
