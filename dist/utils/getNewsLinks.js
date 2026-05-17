@@ -72,7 +72,7 @@ var getNewsLinks = function (scrapingList) { return __awaiter(void 0, void 0, vo
                         headers: {
                             "User-Agent": randomUserAgent,
                         },
-                        timeout: 5000,
+                        timeout: 15000,
                     };
                     return axios_1.default
                         .get("http://m.0033.com/list/sm/sc/".concat(el.newsParam, ".jsonp"), config)

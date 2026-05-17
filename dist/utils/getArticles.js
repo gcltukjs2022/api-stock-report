@@ -64,7 +64,7 @@ var getArticles = function (url, name, retry) {
                         headers: {
                             "User-Agent": randomUserAgent,
                         },
-                        timeout: 5000,
+                        timeout: 15000,
                     };
                     // const modifiedUrl = url.replace("http", "https").replace("m", "news");
                     console.log(url);
